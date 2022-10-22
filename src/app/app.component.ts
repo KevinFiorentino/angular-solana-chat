@@ -1,10 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'angular-solana-chat';
+export class AppComponent implements OnInit {
+
+  constructor(
+    private phantom: PhantomConnectService
+  ) {}
+
+  ngOnInit(): void {
+    this.phantom.isConnected();
+  }
+
+  connectWallet() {
+    this.phantom.connect();
+  }
+
+  disconnectWallet() {
+    this.phantom.disconnect();
+  }
+
 }
