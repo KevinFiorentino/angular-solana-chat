@@ -24,4 +24,13 @@ export class AppComponent implements OnInit {
     this.phantom.disconnect();
   }
 
+  async getAllMessages() {
+    const messages = await this.phantom.getAllMessages();
+    console.log(messages);
+  }
+
+  async sendMessage() {
+    this.phantom.sendMessage();
+  }
+
 }
