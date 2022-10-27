@@ -26,6 +26,16 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "@project-serum/borsh",
+              "@solana/buffer-layout",
+              "assert",
+              "borsh",
+              "bs58",
+              "buffer",
+              "jayson/lib/client/browser",
+              "rpc-websockets"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

@@ -51,9 +51,7 @@ export class PhantomConnectService {
 
   /* ********** CONTRACT CONEXION ********** */
 
-  setContractProvider()/* : Provider  */{
-    const { solana } = window as PhantomSolanaTypes;
-
+  setContractProvider(): void {
     const network = clusterApiUrl('devnet');    // devnet | testnet | mainnet-beta (Se llama '-beta', pero es la red principal de Solana)
 
     const comm: Commitment = 'processed';
@@ -62,11 +60,8 @@ export class PhantomConnectService {
 
     setProvider({
       connection: connection,
-      /* wallet: window.solana, */
       publicKey: this.publicKey
     });
-
-    /* return provider; */
   }
 
 }

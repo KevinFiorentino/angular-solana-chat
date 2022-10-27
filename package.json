@@ -22,6 +22,7 @@
     "@solana/web3.js": "^1.66.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
+    "util": "^0.12.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
