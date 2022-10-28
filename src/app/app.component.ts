@@ -26,7 +26,15 @@ export class AppComponent implements OnInit {
 
   async getAllMessages() {
     const messages = await this.phantom.getAllMessages();
+
     console.log(messages);
+
+    /* console.log(messages[0]);
+    console.log(messages[0].publicKey.toString());
+    console.log(messages[0].account.owner.toString());
+    console.log(messages[0].account.text);
+    console.log(messages[0].account.timestamp.toString()); */
+
   }
 
   async sendMessage() {

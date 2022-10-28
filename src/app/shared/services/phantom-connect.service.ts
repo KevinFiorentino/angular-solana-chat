@@ -1,11 +1,11 @@
 import { Injectable, } from '@angular/core';
 
 // Lib principal de Solana Web3
-import { Connection, PublicKey, Commitment, clusterApiUrl } from '@solana/web3.js';
+import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions } from '@solana/web3.js';
 
 // Anchor es el framework para desarrollar contratos en Solana con Rust
 import * as anchor from '@project-serum/anchor';
-import { Program } from '@project-serum/anchor';
+import { Program, ProgramAccount } from '@project-serum/anchor';
 /* import { Program, Provider, AnchorProvider, setProvider, getProvider, web3 } from '@project-serum/anchor'; */
 /* const { PublicKey, SystemProgram, Keypair, Connection, clusterApiUrl } = anchor.web3; */
 
@@ -13,6 +13,7 @@ import { Program } from '@project-serum/anchor';
 // Custom Types
 import { PhantomSolanaTypes, PhantomProvider } from '@shared/interfaces/phantom.interface';
 import { IDL, SolanaChat } from '@shared/interfaces/solana-chat.idl';
+import { TypeDef, IdlTypes } from '@project-serum/anchor/dist/cjs/program/namespace/types';
 
 
 @Injectable({
@@ -21,8 +22,6 @@ import { IDL, SolanaChat } from '@shared/interfaces/solana-chat.idl';
 export class PhantomConnectService {
 
   public walletAddress!: string | undefined;
-
-  /* public publicKey?: typeof PublicKey; */
 
   constructor() {
     setTimeout(() => {
@@ -37,10 +36,7 @@ export class PhantomConnectService {
     setTimeout(async () => {
       const { solana } = window as PhantomSolanaTypes;
       const response = await solana?.connect({ onlyIfTrusted: true });  // Conecta automaticamente si tiene permisos
-
-      /* this.publicKey = response?.publicKey; */
       this.walletAddress = response?.publicKey.toString();
-
       console.log('Address:', this.walletAddress);
     }, 0);
   }
@@ -61,53 +57,52 @@ export class PhantomConnectService {
   /* ********** NETWORK CONEXION ********** */
 
   setContractProvider(): void {
-
     const network = clusterApiUrl('devnet');    // devnet | testnet | mainnet-beta (Se llama '-beta', pero es la red principal de Solana)
     const comm: Commitment = 'processed';
     const connection = new Connection(network, comm)
-    const opts = {
-      preflightCommitment: "processed",
+    const opts: ConfirmOptions = {
+      preflightCommitment: 'processed',
     };
 
-    /* const provider = new anchor.AnchorProvider(
-      connection: connection,
-      wallet: window.solana,
-      opts: opts
-    );;
-    anchor.setProvider(provider); */
-
-    /*
-
-    setProvider({
-      connection: connection,
-      publicKey: this.publicKey
-    }); */
+    const provider = new anchor.AnchorProvider(
+      connection,
+      window.solana,
+      opts
+    );
+    anchor.setProvider(provider);
   }
 
 
   /* ********** CONTRACT CONEXION ********** */
 
-  getAllMessages(): Promise<any> {
+  getAllMessages() /* : Promise<ProgramAccount<any>[]> */ {
     const programID = new PublicKey(IDL.metadata.address);
     const provider = anchor.getProvider();
-
     const program = new Program(IDL, programID, provider);
-    /* const program = anchor.workspace.SolanaChat as Program<SolanaChat>; */
 
     return program.account.message.all();
   }
 
   async sendMessage() {
-    /* const { SystemProgram, Keypair } = web3;
+    const { SystemProgram, Keypair } = anchor.web3;
     const programID = new PublicKey(IDL.metadata.address);
-
-    const provider = getProvider();
-
+    const provider = anchor.getProvider();
     const program = new Program(IDL, programID, provider);
 
-    const text = await program.methods.createMessage('First Message').rpc();
+    const text = 'Test2';
+    const msg = Keypair.generate();
 
-    console.log('text', text) */
+    const txId = await program.methods
+      .createMessage(text)
+      .accounts({
+        message: msg.publicKey,
+        user: provider.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([msg])
+      .rpc();
+
+    console.log('txId', txId)
   }
 
 }

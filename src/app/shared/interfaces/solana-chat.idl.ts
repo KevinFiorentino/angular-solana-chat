@@ -1,3 +1,6 @@
+// Solana IDL = Interface Description Language
+// Ethereum ABI = Application Binary Interface
+
 export type SolanaChat = {
   "version": "0.1.0",
   "name": "solana_chat",
@@ -52,7 +55,7 @@ export type SolanaChat = {
     }
   ],
   "metadata": {
-    "address": "ABb1xsKmAprpQr2yqkfsMXXt9ZnMdLENwTLZVDMVmfhy"
+    "address": "7PTHeLBQNpZTr72sTWHcL1ZLpcrhcnLf2rSqmEN2pGWG"
   }
 };
 
@@ -110,6 +113,6 @@ export const IDL: SolanaChat = {
     }
   ],
   "metadata": {
-    "address": "ABb1xsKmAprpQr2yqkfsMXXt9ZnMdLENwTLZVDMVmfhy"
+    "address": "7PTHeLBQNpZTr72sTWHcL1ZLpcrhcnLf2rSqmEN2pGWG"
   }
 };
