@@ -10,19 +10,12 @@ export class AppComponent implements OnInit {
 
   constructor(
     private phantom: PhantomConnectService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.phantom.isConnected();
   }
 
-  connectWallet() {
-    this.phantom.connect();
-  }
-
-  disconnectWallet() {
-    this.phantom.disconnect();
-  }
 
   async getAllMessages() {
     const messages = await this.phantom.getAllMessages();

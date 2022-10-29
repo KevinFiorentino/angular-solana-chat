@@ -2,26 +2,29 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { MaterialModule } from '@material/material.module';
 
-const ANGULAR_MODULES = [
-  CommonModule,
-  RouterModule,
-  FormsModule,
-  ReactiveFormsModule,
-];
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
-const CUSTOM_MODULES = [
-  MaterialModule,
-];
+const COMPONENTS = [
+  NavBarComponent
+]
 
 @NgModule({
-  declarations: [],
-  imports: [
-    ANGULAR_MODULES,
-    CUSTOM_MODULES,
+  declarations: [
+    COMPONENTS
   ],
-  exports: [],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
+  ],
+  exports: [
+    COMPONENTS
+  ],
   providers: []
 })
 export class SharedModule { }
