@@ -1,3 +1,56 @@
-::ng-deep .app-chat {
+@import "../../../../variables";
 
+::ng-deep .app-chat {
+    display: flex;
+    justify-content: center;
+
+    .messages-wrapped {
+        width: 70%;
+        margin: 15px;
+        border: 2px solid $color-phantom;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px #00000029;
+    }
+    .message {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+
+        .msg-box {
+            color: $color-white;
+            display: inline-table;
+            width: max-content;
+            padding: 5px 10px 5px 10px;
+            box-shadow: 0 3px 6px #00000029;
+
+            small {
+                font-size: 10px;
+            }
+            p {
+                margin: 0;
+            }
+            span {
+                font-size: 9px;
+                margin-left: 10px;
+            }
+        }
+    }
+    .message-left {
+        align-items: start;
+
+        .msg-box {
+            background-color: $color-blue;
+            border: 1px solid $color-blue;
+            border-radius: 0 10px 10px 10px;
+        }
+    }
+    .message-right {
+        align-items: end;
+
+        .msg-box {
+            background-color: $color-green;
+            border: 1px solid $color-green;
+            border-radius: 10px 0 10px 10px;
+        }
+    }
 }

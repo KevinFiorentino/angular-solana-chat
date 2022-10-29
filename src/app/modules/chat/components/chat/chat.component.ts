@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
+import { UtilsService } from '@shared/services/utils.service';
 
 @Component({
   selector: 'app-chat',
@@ -9,6 +10,7 @@ import { PhantomConnectService } from '@shared/services/phantom-connect.service'
 export class ChatComponent implements OnInit {
 
   constructor(
+    public utils: UtilsService,
     private phantom: PhantomConnectService
   ) { }
 

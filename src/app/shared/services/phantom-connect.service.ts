@@ -1,4 +1,4 @@
-import { Injectable, } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 // Lib principal de Solana Web3
 import * as web3 from '@solana/web3.js';
@@ -77,7 +77,6 @@ export class PhantomConnectService {
   getAllMessages() /* : Promise<ProgramAccount<any>[]> */ {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
-
     return program.account.message.all();
   }
 
