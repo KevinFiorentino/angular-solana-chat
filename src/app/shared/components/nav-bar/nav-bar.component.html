@@ -2,15 +2,20 @@
     <mat-toolbar color="primary">
         <mat-toolbar-row>
 
-            <span>Angular/Solana</span>
+            <span>Angular♡Solana</span>
+
+            <span class="nav-bar-spacer"></span>
+
+            <div class="nav-bar-links">
+                <a routerLink="/chat">Chat</a>
+                <a routerLink="/my-messages">My messages</a>
+            </div>
 
             <span class="nav-bar-spacer"></span>
 
             <button (click)="connectWallet()" class="btn-phantom">
                 <img src="/assets/images/phantom-logo.svg" title="Phantom connect">
             </button>
-
-
 
         </mat-toolbar-row>
     </mat-toolbar>

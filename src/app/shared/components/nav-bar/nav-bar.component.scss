@@ -1,15 +1,26 @@
-.app-nav-bar {
-    .nav-bar-icon {
-        padding: 0 14px;
+@import "../../../variables";
+
+::ng-deep .app-nav-bar {
+    .nav-bar-links {
+        a {
+            color: $color-white;
+            font-size: 14px;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        a:hover, a:focus {
+            text-decoration: underline;
+        }
     }
     .nav-bar-spacer {
         flex: 1 1 auto;
     }
     .btn-phantom {
         cursor: pointer;
-        background-color: #6f66e1;
-        border: 1px solid #6f66e1;
+        background-color: $color-phantom;
+        border: 1px solid $color-phantom;
         border-radius: 5px;
+        box-shadow: 0 3px 6px #00000029;
 
         img {
             display: block;
