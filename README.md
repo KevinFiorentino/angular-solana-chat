@@ -2,6 +2,11 @@
 
 ## Configuración del entorno
 
+#### Install project
+
+- `npm install`
+- `ng serve`
+
 #### Dependencias necesarias
 
 - `npm i @solana/web3.js`

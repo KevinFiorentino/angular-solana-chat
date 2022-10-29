@@ -23,6 +23,7 @@
     ],
     "paths": {
       "@environments/*": ["src/environments/*"],
+      "@material/*": ["src/app/material/*"],
       "@modules/*": ["src/app/modules/*"],
       "@shared/*": ["src/app/shared/*"],
     }
