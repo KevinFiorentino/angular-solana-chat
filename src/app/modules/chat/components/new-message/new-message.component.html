@@ -1,1 +1,22 @@
-<p>new-message works!</p>
+<div class="app-new-message">
+
+    <div>
+        <h1>Send message</h1>
+    </div>
+
+    <form [formGroup]="formMessage">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Message</mat-label>
+            <input type="text" matInput formControlName="text">
+            <mat-icon matSuffix>message</mat-icon>
+            <mat-error>Enter your message</mat-error>
+        </mat-form-field>
+
+        <button (click)="sendMessage()" class="btn-form" mat-button>
+            Send
+        </button>
+
+    </form>
+
+</div>
