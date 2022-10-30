@@ -6,10 +6,12 @@ import { MaterialModule } from '@material/material.module';
 import { SharedModule } from '@shared/shared.module';
 
 import { ChatComponent } from './components/chat/chat.component';
+import { NewMessageComponent } from './components/new-message/new-message.component';
 
 @NgModule({
   declarations: [
-    ChatComponent
+    ChatComponent,
+    NewMessageComponent
   ],
   imports: [
     CommonModule,

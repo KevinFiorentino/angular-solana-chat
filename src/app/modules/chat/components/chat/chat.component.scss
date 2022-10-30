@@ -57,4 +57,14 @@
     .wallet-disconnect {
         margin-top: 15px;
     }
+    .new-message {
+        color: $color-white;
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        background-color: $color-phantom;
+        border: 2px solid $color-phantom;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px #00000029;
+    }
 }

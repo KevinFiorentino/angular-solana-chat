@@ -1,19 +1,19 @@
-# Angular/Solana Chat
+# Angular/Solana dapp
 
-## Configuración del entorno
+## Config environment
 
-#### Install project
+### Install project
 
 - `npm install`
 - `ng serve`
 
-#### Dependencias necesarias
+#### Required dependencies
 
 - `npm i @solana/web3.js`
 - `npm i @project-serum/anchor`
 
 
-#### Dependencias para evitar posibles errores
+#### Dependencies to avoid possible errors
 
 - `npm i --save-dev @types/bn.js`
 - `npm i --save-dev assert`
@@ -23,7 +23,6 @@
 
 ```json
 "compileOptions": {
-  ...
   "allowSyntheticDefaultImports": true
 }
 ```
@@ -34,7 +33,6 @@
 "build": {
   "builder": "@angular-devkit/build-angular:browser",
   "options": {
-    ...
     "allowedCommonJsDependencies": [
       "@project-serum/borsh",
       "@solana/buffer-layout",
@@ -49,7 +47,7 @@
 }
 ```
 
-#### Otros errores
+#### Possible mistakes
 
 - [process is not defined...](https://github.com/twilio/twilio-client.js/issues/284)
 - [Buffer is not defined](https://stackoverflow.com/questions/50371593/angular-6-uncaught-referenceerror-buffer-is-not-defined)

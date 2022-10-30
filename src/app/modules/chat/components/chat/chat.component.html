@@ -24,4 +24,10 @@
         </div>
     </ng-template>
 
+    <div *ngIf="walletAddress">
+        <button (click)="sendNewMessage()" class="new-message" mat-button>
+            Send message
+        </button>
+    </div>
+
 </div>

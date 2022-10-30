@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
+import { NewMessageComponent } from '@modules/chat/components/new-message/new-message.component';
+import { MatDialog } from '@angular/material/dialog';
 import { PublicKey } from '@solana/web3.js';
 import { format } from 'date-fns';
 
@@ -15,6 +17,7 @@ export class ChatComponent implements OnInit {
   public walletAddress!: string | null;
 
   constructor(
+    private dialog: MatDialog,
     private phantom: PhantomConnectService,
     private utils: UtilsService,
   ) { }
@@ -34,6 +37,12 @@ export class ChatComponent implements OnInit {
 
   getDate(date: string): string {
     return format(new Date(1666970458 * 1000), 'MM/d/yyyy hh:mm');
+  }
+
+  sendNewMessage(): void {
+    this.dialog.open(NewMessageComponent, {
+      data: {}
+    });
   }
 
 }
