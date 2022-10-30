@@ -1,19 +1,27 @@
 <div class="app-chat">
 
-    <div *ngIf="messages" class="messages-wrapped">
+    <div *ngIf="walletAddress; else logout" class="messages-wrapped">
 
-        <div *ngFor="let m of messages">
-            <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
-                <div class="msg-box">
-                    <small>{{ cutAddress(m.account.owner.toString()) }}</small>
-                    <p>
-                        {{ m.account.text }}
-                        <span>{{ getDate(m.account.timestamp.toString()) }}</span>
-                    </p>
+        <div *ngIf="messages">
+            <div *ngFor="let m of messages">
+                <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
+                    <div class="msg-box">
+                        <small>{{ cutAddress(m.account.owner.toString()) }}</small>
+                        <p>
+                            {{ m.account.text }}
+                            <span>{{ getDate(m.account.timestamp.toString()) }}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <ng-template #logout>
+        <div class="wallet-disconnect">
+            <p>Connect your wallet to see all messages.</p>
+        </div>
+    </ng-template>
 
 </div>

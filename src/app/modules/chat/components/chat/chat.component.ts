@@ -22,11 +22,9 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.phantom.listenPublicKey
       .subscribe(async (pk: PublicKey | null) => {
-        if (pk) {
-          console.log('asd')
-          this.walletAddress = pk.toString();
+        this.walletAddress = pk ? this.utils.truncatedAddress(pk.toString()) : null;
+        if (this.walletAddress)
           this.messages = await this.phantom.getAllMessages();
-        }
       });
   }
 
@@ -34,7 +32,7 @@ export class ChatComponent implements OnInit {
     return this.utils.truncatedAddress(address);
   }
 
-  getDate(date: string)/* : string */ {
+  getDate(date: string): string {
     return format(new Date(1666970458 * 1000), 'MM/d/yyyy hh:mm');
   }
 

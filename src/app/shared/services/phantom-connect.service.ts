@@ -28,6 +28,8 @@ export class PhantomConnectService {
 
   private walletAddress!: string | null;
 
+  private intervalID!: NodeJS.Timeout;
+
   constructor() {
     setTimeout(async () => {
       this.setContractProvider();
@@ -70,7 +72,6 @@ export class PhantomConnectService {
     const opts: ConfirmOptions = {
       preflightCommitment: this.comm,
     };
-
     const provider = new anchor.AnchorProvider(
       this.connection,
       window.solana,
@@ -80,11 +81,19 @@ export class PhantomConnectService {
   }
 
   async changeWalletListening() {
-    setInterval(() => {
-      if (window?.solana?.publicKey.toString() != this.walletAddress) {
+    // Intervalo infinito para escuchar los cambio de dirección de la wallet
+    this.intervalID = setInterval(() => {
+      if (window.solana.publicKey && (window?.solana?.publicKey?.toString() != this.walletAddress)) {
         this.publicKey.next(window.solana.publicKey);
         this.walletAddress = window.solana.publicKey.toString();
         console.log('Cambio de wallet!!!!!');
+      } else {
+        // Si es null, indica que el usuario cambió a una wallet que no tiene permisos en la dapp
+        if (!window.solana.publicKey) {
+          this.publicKey.next(null);
+          this.walletAddress = null;
+          clearInterval(this.intervalID);
+        }
       }
     }, 2000);
   }
@@ -92,7 +101,7 @@ export class PhantomConnectService {
 
   /* ********** CONTRACT CONEXION ********** */
 
-  getAllMessages() /* : Promise<anchor.ProgramAccount<any>[]> */ {
+  getAllMessages() /* : Promise<anchor.ProgramAccount<any>[]> */ {  // TODO: No logro tipar la respuesta dentro del Promise
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     return program.account.message.all();

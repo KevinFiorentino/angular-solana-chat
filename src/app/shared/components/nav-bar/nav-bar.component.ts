@@ -13,7 +13,7 @@ export class NavBarComponent implements OnInit {
 
   constructor(
     private phantom: PhantomConnectService,
-    private utils: UtilsService,
+    public utils: UtilsService,
   ) { }
 
   ngOnInit(): void {
