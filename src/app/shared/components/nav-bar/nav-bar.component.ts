@@ -21,13 +21,15 @@ export class NavBarComponent implements OnInit {
       .subscribe(pk => {
         this.walletAddress = pk ? this.utils.truncatedAddress(pk.toString()) : null;
       });
+
+    this.phantom.walletConnectAutomatically();
   }
 
-  connectWallet() {
+  walletConnect() {
     this.phantom.walletConnect();
   }
 
-  disconnectWallet() {
+  walletDisconnect() {
     this.phantom.walletDisconnect();
   }
 

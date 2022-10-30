@@ -36,15 +36,15 @@ export class PhantomConnectService {
 
   /* ********** WALLET CONEXION ********** */
 
-  /* isConnected() {
-    setTimeout(async () => {
-      const { solana } = window as PhantomSolanaTypes;
-      const response = await solana?.connect({ onlyIfTrusted: true });  // Conecta automaticamente si tiene permisos
-      this.walletAddress = response?.publicKey.toString();
-      this.publicKey = response?.publicKey;
-      this.changeWalletListening();
-    }, 0);
-  } */
+  async walletConnectAutomatically() {
+    const { solana } = window as PhantomSolanaTypes;
+    const response = await solana?.connect({ onlyIfTrusted: true })     // Conecta automaticamente si tiene permisos
+
+    this.publicKey.next(response?.publicKey);
+    this.walletAddress = response?.publicKey.toString();
+
+    this.changeWalletListening();
+  }
 
   async walletConnect() {
     const { solana } = window as PhantomSolanaTypes;
