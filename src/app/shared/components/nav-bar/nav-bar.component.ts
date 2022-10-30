@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
+import { UtilsService } from '@shared/services/utils.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,18 +9,26 @@ import { PhantomConnectService } from '@shared/services/phantom-connect.service'
 })
 export class NavBarComponent implements OnInit {
 
+  public walletAddress!: string | null;
+
   constructor(
-    private phantom: PhantomConnectService
+    private phantom: PhantomConnectService,
+    private utils: UtilsService,
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.phantom.listenPublicKey
+      .subscribe(pk => {
+        this.walletAddress = pk ? this.utils.truncatedAddress(pk.toString()) : null;
+      });
+  }
 
   connectWallet() {
-    this.phantom.connect();
+    this.phantom.walletConnect();
   }
 
   disconnectWallet() {
-    this.phantom.disconnect();
+    this.phantom.walletDisconnect();
   }
 
 }

@@ -10,46 +10,56 @@ import * as anchor from '@project-serum/anchor';
 // Custom Types
 import { PhantomSolanaTypes, PhantomProvider } from '@shared/interfaces/phantom.interface';
 import { IDL, SolanaChat } from '@shared/interfaces/solana-chat.idl';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PhantomConnectService {
 
-  private network: string = clusterApiUrl('devnet');          // devnet | testnet | mainnet-beta (Se llama '-beta', pero es la red principal de Solana)
-  private comm: Commitment = 'processed';                     // Estado de la transacción al momento de notificar al front-end
+  private network: string = clusterApiUrl('devnet');              // devnet | testnet | mainnet-beta (Se llama '-beta', pero es la red principal de Solana)
+  private comm: Commitment = 'processed';                         // Estado de la transacción al momento de notificar al front-end
+  private connection = new Connection(this.network, this.comm);   // Conexión a la red de Solana
 
-  private programID = new PublicKey(IDL.metadata.address);    // Clave pública del contrato inteligente
+  private programID = new PublicKey(IDL.metadata.address);        // Clave pública del contrato inteligente
 
-  private walletAddress!: string | undefined;
+  private publicKey = new BehaviorSubject<PublicKey | null>(null);
+  public listenPublicKey = this.publicKey.asObservable();
+
+  private walletAddress!: string | null;
 
   constructor() {
-    setTimeout(() => {
+    setTimeout(async () => {
       this.setContractProvider();
-      console.log('Provider OK')
-    }, 1000)
+    }, 0);
   }
 
   /* ********** WALLET CONEXION ********** */
 
-  isConnected() {
+  /* isConnected() {
     setTimeout(async () => {
       const { solana } = window as PhantomSolanaTypes;
       const response = await solana?.connect({ onlyIfTrusted: true });  // Conecta automaticamente si tiene permisos
       this.walletAddress = response?.publicKey.toString();
-      console.log('Address:', this.walletAddress);
+      this.publicKey = response?.publicKey;
+      this.changeWalletListening();
     }, 0);
-  }
+  } */
 
-  async connect() {
+  async walletConnect() {
     const { solana } = window as PhantomSolanaTypes;
     const response = await solana?.connect({ onlyIfTrusted: false });   // No conecta automaticamente
+
+    this.publicKey.next(response?.publicKey);
     this.walletAddress = response?.publicKey.toString();
-    console.log('Address:', this.walletAddress);
+
+    this.changeWalletListening();
   }
 
-  async disconnect() {
+  async walletDisconnect() {
     const { solana } = window as PhantomSolanaTypes;
+    this.publicKey.next(null);
+    this.walletAddress = null;
     await solana?.disconnect();
   }
 
@@ -57,18 +67,26 @@ export class PhantomConnectService {
   /* ********** NETWORK CONEXION ********** */
 
   setContractProvider(): void {
-    const connection = new Connection(this.network, this.comm)
-
     const opts: ConfirmOptions = {
-      preflightCommitment: 'processed',
+      preflightCommitment: this.comm,
     };
 
     const provider = new anchor.AnchorProvider(
-      connection,
+      this.connection,
       window.solana,
       opts
     );
     anchor.setProvider(provider);
+  }
+
+  async changeWalletListening() {
+    setInterval(() => {
+      if (window?.solana?.publicKey.toString() != this.walletAddress) {
+        this.publicKey.next(window.solana.publicKey);
+        this.walletAddress = window.solana.publicKey.toString();
+        console.log('Cambio de wallet!!!!!');
+      }
+    }, 2000);
   }
 
 

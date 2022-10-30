@@ -13,9 +13,18 @@
 
             <span class="nav-bar-spacer"></span>
 
-            <button (click)="connectWallet()" class="btn-phantom">
-                <img src="/assets/images/phantom-logo.svg" alt="Phantom connect">
-            </button>
+            <div *ngIf="!walletAddress; else showAddress">
+                <button (click)="connectWallet()" class="btn-phantom">
+                    <img src="/assets/images/phantom-logo.svg" alt="Phantom connect">
+                </button>
+            </div>
+
+            <ng-template #showAddress>
+                {{ walletAddress }}
+                <button (click)="disconnectWallet()" class="btn-phantom btn-disconnect">
+                    Disconnect
+                </button>
+            </ng-template>
 
         </mat-toolbar-row>
     </mat-toolbar>
