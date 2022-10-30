@@ -92,7 +92,7 @@ export class PhantomConnectService {
 
   /* ********** CONTRACT CONEXION ********** */
 
-  getAllMessages() /* : Promise<ProgramAccount<any>[]> */ {
+  getAllMessages() /* : Promise<anchor.ProgramAccount<any>[]> */ {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     return program.account.message.all();

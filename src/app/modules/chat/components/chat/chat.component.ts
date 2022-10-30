@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
+import { PublicKey } from '@solana/web3.js';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-chat',
@@ -9,24 +11,31 @@ import { UtilsService } from '@shared/services/utils.service';
 })
 export class ChatComponent implements OnInit {
 
+  public messages!: any;
+  public walletAddress!: string | null;
+
   constructor(
-    public utils: UtilsService,
-    private phantom: PhantomConnectService
+    private phantom: PhantomConnectService,
+    private utils: UtilsService,
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.phantom.listenPublicKey
+      .subscribe(async (pk: PublicKey | null) => {
+        if (pk) {
+          console.log('asd')
+          this.walletAddress = pk.toString();
+          this.messages = await this.phantom.getAllMessages();
+        }
+      });
+  }
 
-  async getAllMessages() {
-    const messages = await this.phantom.getAllMessages();
+  cutAddress(address: string): string {
+    return this.utils.truncatedAddress(address);
+  }
 
-    console.log(messages);
-
-    /* console.log(messages[0]);
-    console.log(messages[0].publicKey.toString());
-    console.log(messages[0].account.owner.toString());
-    console.log(messages[0].account.text);
-    console.log(messages[0].account.timestamp.toString()); */
-
+  getDate(date: string)/* : string */ {
+    return format(new Date(1666970458 * 1000), 'MM/d/yyyy hh:mm');
   }
 
 }
