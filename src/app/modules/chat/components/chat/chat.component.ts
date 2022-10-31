@@ -14,18 +14,18 @@ import { format } from 'date-fns';
 export class ChatComponent implements OnInit {
 
   public messages!: any;
-  public walletAddress!: string | null;
+  public walletAddress!: string;
 
   constructor(
+    public utils: UtilsService,
     private dialog: MatDialog,
     private phantom: PhantomConnectService,
-    private utils: UtilsService,
   ) { }
 
   ngOnInit(): void {
     this.phantom.listenPublicKey
       .subscribe(async (pk: PublicKey | null) => {
-        this.walletAddress = pk ? this.utils.truncatedAddress(pk.toString()) : null;
+        this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress)
           this.messages = await this.phantom.getAllMessages();
       });

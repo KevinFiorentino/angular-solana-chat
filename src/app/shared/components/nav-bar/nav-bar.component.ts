@@ -9,17 +9,17 @@ import { UtilsService } from '@shared/services/utils.service';
 })
 export class NavBarComponent implements OnInit {
 
-  public walletAddress!: string | null;
+  public walletAddress!: string;
 
   constructor(
-    private phantom: PhantomConnectService,
     public utils: UtilsService,
+    private phantom: PhantomConnectService,
   ) { }
 
   ngOnInit(): void {
     this.phantom.listenPublicKey
       .subscribe(pk => {
-        this.walletAddress = pk ? this.utils.truncatedAddress(pk.toString()) : null;
+        this.walletAddress = pk ? pk.toString() : '';
       });
 
     this.phantom.walletConnectAutomatically();
