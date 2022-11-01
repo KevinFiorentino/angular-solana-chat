@@ -6,13 +6,17 @@
 
     <div *ngIf="walletAddress; else logout" class="messages-wrapped">
 
-        <div *ngIf="messages && messages.length > 0; else withoutMessages">
+        <div *ngIf="!loading; else appLoading">
 
-            <div *ngFor="let m of messages">
-                <div class="message">
-                    <p>{{ m.account.text }}</p>
-                    <small>{{ getDate(m.account.timestamp.toString()) }}</small>
+            <div *ngIf="messages && messages.length > 0; else withoutMessages">
+
+                <div *ngFor="let m of messages">
+                    <div class="message">
+                        <p>{{ m.account.text }}</p>
+                        <small>{{ getDate(m.account.timestamp.toString()) }}</small>
+                    </div>
                 </div>
+
             </div>
 
         </div>
@@ -29,6 +33,12 @@
         <div class="wallet-disconnect">
             <p>Connect your wallet to see all messages.</p>
         </div>
+    </ng-template>
+
+    <ng-template #appLoading>
+        <mat-spinner
+            [diameter]="40"
+        ></mat-spinner>
     </ng-template>
 
 </div>

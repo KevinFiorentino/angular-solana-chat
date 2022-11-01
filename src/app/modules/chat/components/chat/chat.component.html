@@ -6,18 +6,22 @@
 
     <div *ngIf="walletAddress; else logout" ngClass="{{ messages && messages.length > 0 ? 'messages-wrapped' : '' }}">
 
-        <div *ngIf="messages && messages.length > 0">
-            <div *ngFor="let m of messages">
-                <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
-                    <div class="msg-box">
-                        <small>{{ cutAddress(m.account.owner.toString()) }}</small>
-                        <p>
-                            {{ m.account.text }}
-                            <span>{{ getDate(m.account.timestamp.toString()) }}</span>
-                        </p>
+        <div *ngIf="!loading; else appLoading">
+
+            <div *ngIf="messages && messages.length > 0">
+                <div *ngFor="let m of messages">
+                    <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
+                        <div class="msg-box">
+                            <small>{{ cutAddress(m.account.owner.toString()) }}</small>
+                            <p>
+                                {{ m.account.text }}
+                                <span>{{ getDate(m.account.timestamp.toString()) }}</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div>
@@ -26,6 +30,12 @@
         <div class="wallet-disconnect">
             <p>Connect your wallet to see all messages.</p>
         </div>
+    </ng-template>
+
+    <ng-template #appLoading>
+        <mat-spinner
+            [diameter]="40"
+        ></mat-spinner>
     </ng-template>
 
     <div *ngIf="walletAddress">
