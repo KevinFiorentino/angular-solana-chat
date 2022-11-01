@@ -5,15 +5,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '@material/material.module';
 
+import { FooterComponent } from './components/footer/footer.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 const COMPONENTS = [
-  NavBarComponent
+  FooterComponent,
+  NavBarComponent,
 ]
 
 @NgModule({
   declarations: [
-    COMPONENTS
+    COMPONENTS,
   ],
   imports: [
     CommonModule,

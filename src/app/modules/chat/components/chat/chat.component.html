@@ -4,9 +4,9 @@
 
 <div class="app-chat">
 
-    <div *ngIf="walletAddress; else logout" class="messages-wrapped">
+    <div *ngIf="walletAddress; else logout" ngClass="{{ messages && messages.length > 0 ? 'messages-wrapped' : '' }}">
 
-        <div *ngIf="messages">
+        <div *ngIf="messages && messages.length > 0">
             <div *ngFor="let m of messages">
                 <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
                     <div class="msg-box">

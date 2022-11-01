@@ -1,0 +1,38 @@
+@import "../../../variables";
+
+::ng-deep .app-footer {
+    margin-top: 25px;
+    padding-bottom: 10px;
+
+    hr {
+        width: 90%;
+        background-color: $color-phantom;
+        border: 0.1px solid $color-phantom;
+        opacity: .3;
+    }
+    .footer-wrapped {
+        display: flex;
+        justify-content: space-around;
+    }
+    .footer-brand {
+        display: flex;
+
+        p {
+            color: $color-phantom;
+            font-size: 14px;
+        }
+        span {
+            margin-left: 10px;
+        }
+    }
+    .footer-links {
+        display: flex;
+
+        a {
+            color: $color-phantom;
+            font-size: 12px;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+    }
+}
