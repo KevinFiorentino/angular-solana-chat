@@ -26,8 +26,10 @@ export class ChatComponent implements OnInit {
     this.phantom.listenPublicKey
       .subscribe(async (pk: PublicKey | null) => {
         this.walletAddress = pk ? pk.toString() : '';
-        if (this.walletAddress)
+        if (this.walletAddress) {
           this.messages = await this.phantom.getAllMessages();
+          this.messages = this.messages.reverse();
+        }
       });
   }
 
@@ -35,8 +37,8 @@ export class ChatComponent implements OnInit {
     return this.utils.truncatedAddress(address);
   }
 
-  getDate(date: string): string {
-    return format(new Date(1666970458 * 1000), 'MM/d/yyyy hh:mm');
+  getDate(date: number): string {
+    return format(new Date(date * 1000), 'MM/d/yyyy hh:mm');
   }
 
   sendNewMessage(): void {

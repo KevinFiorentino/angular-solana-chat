@@ -1,1 +1,34 @@
-<p>my-messages works!</p>
+<div class="app-title">
+    <h1>My messages</h1>
+</div>
+
+<div class="app-my-messages">
+
+    <div *ngIf="walletAddress; else logout" class="messages-wrapped">
+
+        <div *ngIf="messages && messages.length > 0; else withoutMessages">
+
+            <div *ngFor="let m of messages">
+                <div class="message">
+                    <p>{{ m.account.text }}</p>
+                    <small>{{ getDate(m.account.timestamp.toString()) }}</small>
+                </div>
+            </div>
+
+        </div>
+
+        <ng-template #withoutMessages>
+            <div class="without-messages">
+                <p>You haven't sent messages yet.</p>
+            </div>
+        </ng-template>
+
+    </div>
+
+    <ng-template #logout>
+        <div class="wallet-disconnect">
+            <p>Connect your wallet to see all messages.</p>
+        </div>
+    </ng-template>
+
+</div>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
-import { NewMessageComponent } from '@modules/chat/components/new-message/new-message.component';
 import { PublicKey } from '@solana/web3.js';
 import { format } from 'date-fns';
 
@@ -26,7 +25,7 @@ export class MyMessagesComponent implements OnInit {
         this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress) {
           this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);
-          console.log(this.messages)
+          this.messages = this.messages.reverse();
         }
       });
   }
@@ -35,8 +34,8 @@ export class MyMessagesComponent implements OnInit {
     return this.utils.truncatedAddress(address);
   }
 
-  getDate(date: string): string {
-    return format(new Date(1666970458 * 1000), 'MM/d/yyyy hh:mm');
+  getDate(date: number): string {
+    return format(new Date(date * 1000), 'MM/d/yyyy hh:mm');
   }
 
 }

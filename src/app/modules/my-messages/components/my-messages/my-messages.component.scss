@@ -1,3 +1,29 @@
-::ng-deep .app-my-messages {
+@import "../../../../variables";
 
+::ng-deep .app-my-messages {
+    display: flex;
+    justify-content: center;
+
+    .messages-wrapped {
+        width: 70%;
+
+        .message {
+            display: flex;
+            justify-content: space-between;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 3px 6px #00000029;
+            background-color: rgb(111,102,225, .1);
+            padding: 10px;
+            margin-bottom: 10px;
+
+            p {
+                margin-bottom: 0;
+            }
+        }
+    }
+    .wallet-disconnect, .without-messages {
+        text-align: center;
+        margin-top: 15px;
+    }
 }
