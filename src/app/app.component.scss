@@ -8,3 +8,36 @@
         margin-top: 15px;
     }
 }
+
+// Alerts
+::ng-deep snack-bar-container {
+    box-shadow: 0 6px 9px #00000029;
+
+    &.app-alert-success {
+        background: linear-gradient(180deg, #008F86 0%, #23BBAD 100%) !important;
+    }
+    &.app-alert-danger {
+        background: linear-gradient(180deg, #C20000 0%, #E00000 100%) !important;
+    }
+    &.app-alert-message {
+        background: linear-gradient(180deg, #044484 0%, #0260D5 100%) !important;
+    }
+    &.app-alert-warning {
+        background: linear-gradient(180deg, #FF9000 0%, #DC5C05 100%) !important;
+    }
+
+    .mat-simple-snack-bar-content {
+        color: #FAFAFA !important;
+        font-size: 13px !important;
+        overflow: visible !important;
+    }
+    .mat-simple-snackbar-action {
+        color: #FAFAFA !important;
+        background: transparent;
+
+        button {
+            font-size: 13px !important;
+            font-weight: 400;
+        }
+    }
+}

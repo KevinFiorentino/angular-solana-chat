@@ -28,7 +28,6 @@ export class ChatComponent implements OnInit {
         this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress) {
           this.messages = await this.phantom.getAllMessages();
-          this.messages = this.messages.reverse();
         }
       });
   }

@@ -12,8 +12,6 @@ import { PhantomSolanaTypes, PhantomProvider } from '@shared/interfaces/phantom.
 import { IDL, SolanaChat } from '@shared/interfaces/solana-chat.idl';
 import { BehaviorSubject } from 'rxjs';
 
-import BN from 'bn.js';
-import bs58 from 'bs58';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +41,7 @@ export class PhantomConnectService {
 
   async walletConnectAutomatically() {
     const { solana } = window as PhantomSolanaTypes;
-    const response = await solana?.connect({ onlyIfTrusted: true })     // Conecta automaticamente si tiene permisos
+    const response = await solana?.connect({ onlyIfTrusted: true })     // Conecta automaticamente si la wallet tiene permisos
 
     this.publicKey.next(response?.publicKey);
     this.walletAddress = response?.publicKey.toString();
@@ -122,19 +120,19 @@ export class PhantomConnectService {
     return program.account.message.all([{
       memcmp: {
         offset: 8,
-        bytes: walletAddress.toString()
+        bytes: walletAddress
       }
     }]);
   }
 
-  async sendMessage(message: string) {
+  async sendMessage(message: string): Promise<string> {     // Return Transaction ID
     const { SystemProgram, Keypair } = anchor.web3;
 
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     const kp = Keypair.generate();
 
-    const txId = await program.methods
+    return program.methods
       .createMessage(message)
       .accounts({
         message: kp.publicKey,
@@ -143,8 +141,6 @@ export class PhantomConnectService {
       })
       .signers([kp])
       .rpc();
-
-    console.log('txId', txId);
   }
 
 }
