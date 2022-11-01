@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class NewMessageComponent implements OnInit {
 
   public formMessage!: FormGroup;
+  public loading = false;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -33,6 +34,7 @@ export class NewMessageComponent implements OnInit {
 
   async sendMessage() {
     if (this.formMessage.valid) {
+      this.loading = true;
       const text = this.formMessage.get('text')!.value;
       this.phantom.sendMessage(text)
         .then(txId => {
@@ -40,6 +42,7 @@ export class NewMessageComponent implements OnInit {
           this.alertTxOK(`Transaction ID: ${txId}`);
           this.data.callback();
           this.closeModal();
+          this.loading = false;
         })
         .catch(err => {
           this.alertTxErr(err.message);

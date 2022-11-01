@@ -13,10 +13,16 @@
             <mat-error>Enter your message</mat-error>
         </mat-form-field>
 
-        <button (click)="sendMessage()" class="btn-form" mat-button>
+        <button *ngIf="!loading, else appLoading" (click)="sendMessage()" class="btn-form" mat-button>
             Send
         </button>
 
     </form>
+
+    <ng-template #appLoading>
+        <mat-spinner
+            [diameter]="40"
+        ></mat-spinner>
+    </ng-template>
 
 </div>
