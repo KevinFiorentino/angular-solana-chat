@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
         this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress) {
           this.messages = await this.phantom.getAllMessages();
+          this.messages = this.utils.sortMessages(this.messages);
         }
       });
   }
@@ -42,8 +43,16 @@ export class ChatComponent implements OnInit {
 
   sendNewMessage(): void {
     this.dialog.open(NewMessageComponent, {
-      data: {}
+      data: {
+        callback: this.callbackNewMessage.bind(this)
+      }
     });
+  }
+
+  async callbackNewMessage() {
+    // Update all messages
+    this.messages = await this.phantom.getAllMessages();        // TODO: Improve performance
+    this.messages = this.utils.sortMessages(this.messages);
   }
 
 }

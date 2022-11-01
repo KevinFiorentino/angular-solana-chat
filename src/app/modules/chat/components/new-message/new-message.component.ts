@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -18,6 +18,7 @@ export class NewMessageComponent implements OnInit {
     private formBuilder: FormBuilder,
     private phantom: PhantomConnectService,
     private dialog: MatDialogRef<NewMessageComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
 
   ngOnInit(): void {
@@ -37,6 +38,7 @@ export class NewMessageComponent implements OnInit {
         .then(txId => {
           console.log(`Transaction ID: ${txId}`);
           this.alertTxOK(`Transaction ID: ${txId}`);
+          this.data.callback();
           this.closeModal();
         })
         .catch(err => {
@@ -47,7 +49,7 @@ export class NewMessageComponent implements OnInit {
 
   alertTxOK(msg: string): void {
     this.snackBar.open(msg, 'Close', {
-      duration: 700000,                                 // !!!!!!!!!!!
+      duration: 7000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       panelClass: ['app-alert-success']

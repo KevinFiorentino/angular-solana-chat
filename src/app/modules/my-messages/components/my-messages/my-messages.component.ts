@@ -23,8 +23,10 @@ export class MyMessagesComponent implements OnInit {
     this.phantom.listenPublicKey
       .subscribe(async (pk: PublicKey | null) => {
         this.walletAddress = pk ? pk.toString() : '';
-        if (this.walletAddress)
+        if (this.walletAddress) {
           this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);
+          this.messages = this.utils.sortMessages(this.messages);
+        }
       });
   }
 
