@@ -1,0 +1,17 @@
+@import "../../../../variables";
+
+::ng-deep .app-new-update {
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+    }
+    .btn-form {
+        color: $color-white;
+        background-color: $color-phantom;
+        border: 2px solid $color-phantom;
+        border-radius: 5px;
+        box-shadow: 0 3px 6px #00000029;
+        margin-top: 10px;
+    }
+}

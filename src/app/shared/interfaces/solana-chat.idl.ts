@@ -1,6 +1,3 @@
-// Solana IDL = Interface Description Language
-// Ethereum ABI = Application Binary Interface
-
 export type SolanaChat = {
   "version": "0.1.0",
   "name": "solana_chat",
@@ -12,6 +9,58 @@ export type SolanaChat = {
           "name": "message",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "updateMessage",
+      "accounts": [
+        {
+          "name": "message",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deleteMessage",
+      "accounts": [
+        {
+          "name": "message",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "user",
@@ -55,7 +104,7 @@ export type SolanaChat = {
     }
   ],
   "metadata": {
-    "address": "7PTHeLBQNpZTr72sTWHcL1ZLpcrhcnLf2rSqmEN2pGWG"
+    "address": "HVGvQSXwVwRZqYHoBEHCfVC1HNhgE7BDa2w5vmUmrXQL"
   }
 };
 
@@ -88,6 +137,58 @@ export const IDL: SolanaChat = {
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "updateMessage",
+      "accounts": [
+        {
+          "name": "message",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deleteMessage",
+      "accounts": [
+        {
+          "name": "message",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -113,6 +214,6 @@ export const IDL: SolanaChat = {
     }
   ],
   "metadata": {
-    "address": "7PTHeLBQNpZTr72sTWHcL1ZLpcrhcnLf2rSqmEN2pGWG"
+    "address": "HVGvQSXwVwRZqYHoBEHCfVC1HNhgE7BDa2w5vmUmrXQL"
   }
 };

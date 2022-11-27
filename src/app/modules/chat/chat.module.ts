@@ -8,11 +8,13 @@ import { SharedModule } from '@shared/shared.module';
 
 import { ChatComponent } from './components/chat/chat.component';
 import { NewMessageComponent } from './components/new-message/new-message.component';
+import { UpdateMessageComponent } from './components/update-message/update-message.component';
 
 @NgModule({
   declarations: [
     ChatComponent,
-    NewMessageComponent
+    NewMessageComponent,
+    UpdateMessageComponent
   ],
   imports: [
     CommonModule,

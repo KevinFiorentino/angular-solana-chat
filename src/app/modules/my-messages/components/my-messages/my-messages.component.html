@@ -13,7 +13,15 @@
                 <div *ngFor="let m of messages">
                     <div class="message">
                         <p>{{ m.account.text }}</p>
-                        <small>{{ getDate(m.account.timestamp.toString()) }}</small>
+                        <div>
+                            <small>{{ getDate(m.account.timestamp.toString()) }}</small>
+                            <button (click)="editMessage(m)" mat-icon-button>
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button (click)="deleteMessage(m)" mat-icon-button>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
 

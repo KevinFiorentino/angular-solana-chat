@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
+import { UpdateMessageComponent } from '@modules/chat/components/update-message/update-message.component';
+import { MatDialog } from '@angular/material/dialog';
 import { PublicKey } from '@solana/web3.js';
 import { format } from 'date-fns';
+import { SolanaChat } from '@shared/interfaces/solana-chat.idl';
+import { ProgramAccount, IdlTypes }from '@project-serum/anchor';
 
 @Component({
   selector: 'app-my-messages',
@@ -17,6 +21,7 @@ export class MyMessagesComponent implements OnInit {
 
   constructor(
     public utils: UtilsService,
+    private dialog: MatDialog,
     private phantom: PhantomConnectService,
   ) { }
 
@@ -43,6 +48,28 @@ export class MyMessagesComponent implements OnInit {
 
   getDate(date: number): string {
     return format(new Date(date * 1000), 'MM/d/yyyy hh:mm');
+  }
+
+  editMessage(msg: ProgramAccount<IdlTypes<SolanaChat>>): void {
+    this.dialog.open(UpdateMessageComponent, {
+      data: {
+        msg: msg,
+        callback: this.callbackUpdMessage.bind(this)
+      }
+    });
+  }
+
+  deleteMessage(msg: ProgramAccount<IdlTypes<SolanaChat>>): void {
+    this.phantom.deleteMessage(msg.publicKey)
+      .then(txId => {
+        console.log(`Transaction ID: ${txId}`);
+      });
+  }
+
+  async callbackUpdMessage() {
+    // Update all messages
+    /* this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);        // TODO: Improve performance
+    this.messages = this.utils.sortMessages(this.messages); */
   }
 
 }

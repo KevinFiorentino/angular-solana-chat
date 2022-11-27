@@ -1,0 +1,28 @@
+<div class="app-new-update">
+
+    <div>
+        <h1>Update message</h1>
+    </div>
+
+    <form [formGroup]="formMessage">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Message</mat-label>
+            <input type="text" matInput formControlName="text">
+            <mat-icon matSuffix>message</mat-icon>
+            <mat-error>Enter your message</mat-error>
+        </mat-form-field>
+
+        <button *ngIf="!loading, else appLoading" (click)="updateMessage()" class="btn-form" mat-button>
+            Update
+        </button>
+
+    </form>
+
+    <ng-template #appLoading>
+        <mat-spinner
+            [diameter]="40"
+        ></mat-spinner>
+    </ng-template>
+
+</div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 // Lib principal de Solana Web3
 import * as web3 from '@solana/web3.js';
-import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions } from '@solana/web3.js';
+import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Keypair } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 
 // Anchor es el framework de Rust para desarrollar contratos en Solana
@@ -109,19 +109,19 @@ export class PhantomConnectService {
 
   /* ********** CONTRACT CONEXION ********** */
 
-  getAccountInfo(publicKey: PublicKey)/* : Promise<anchor.web3.AccountInfo<Buffer> | null> */ {
+  /* getAccountInfo(publicKey: PublicKey): Promise<anchor.web3.AccountInfo<Buffer> | null> {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     return program.account.message.getAccountInfo(publicKey);
-  }
+  } */
 
-  getAllMessages() /* : Promise<anchor.ProgramAccount<any>[]> */ {    // TODO: No logro tipar la respuesta dentro del Promise
+  getAllMessages(): Promise<anchor.ProgramAccount<anchor.IdlTypes<SolanaChat>>[]> {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     return program.account.message.all();
   }
 
-  getMessagesByWalletAddress(walletAddress: string) {
+  getMessagesByWalletAddress(walletAddress: string): Promise<anchor.ProgramAccount<anchor.IdlTypes<SolanaChat>>[]> {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     return program.account.message.all([{
@@ -132,7 +132,7 @@ export class PhantomConnectService {
     }]);
   }
 
-  async sendMessage(message: string): Promise<string> {     // Return Transaction ID
+  sendMessage(message: string): Promise<string> {     // Return Transaction ID
     const { SystemProgram, Keypair } = anchor.web3;
 
     const provider = anchor.getProvider();
@@ -147,6 +147,37 @@ export class PhantomConnectService {
         systemProgram: SystemProgram.programId,
       })
       .signers([kp])
+      .rpc();
+  }
+
+  updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
+
+    const provider = anchor.getProvider();
+    const program = new anchor.Program(IDL, this.programID, provider);
+
+    console.log(message, accountPublicKey)
+
+    return program.methods
+      .updateMessage(message)
+      .accounts({
+        message: accountPublicKey,
+        user: provider.publicKey,
+      })
+      .rpc();
+  }
+
+
+  deleteMessage(accountPublicKey: PublicKey): Promise<string> {
+
+    const provider = anchor.getProvider();
+    const program = new anchor.Program(IDL, this.programID, provider);
+
+    return program.methods
+      .deleteMessage('Some text...')
+      .accounts({
+        message: accountPublicKey,
+        user: provider.publicKey,
+      })
       .rpc();
   }
 

@@ -10,6 +10,7 @@
         .message {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border: none;
             border-radius: 5px;
             box-shadow: 0 3px 6px #00000029;
@@ -19,6 +20,15 @@
 
             p {
                 margin-bottom: 0;
+            }
+            .mat-icon-button {
+                color: $color-white;
+                background-color: $color-phantom;
+                margin-left: 10px;
+                box-shadow: 0 3px 6px #00000029;
+            }
+            .mat-icon-button:hover, .mat-icon-button:focus {
+                background-color: rgb(111,102,225, .8);
             }
         }
     }
