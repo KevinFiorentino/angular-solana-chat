@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 // Lib principal de Solana Web3
 import * as web3 from '@solana/web3.js';
 import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions } from '@solana/web3.js';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 
 // Anchor es el framework de Rust para desarrollar contratos en Solana
 import * as anchor from '@project-serum/anchor';
@@ -50,6 +51,12 @@ export class PhantomConnectService {
   }
 
   async walletConnect() {
+
+    // https://github.com/solana-labs/wallet-adapter/tree/master/packages/wallets/phantom
+
+    /* const p = new PhantomWalletAdapter();
+    await p.connect(); */
+
     const { solana } = window as PhantomSolanaTypes;
     const response = await solana?.connect({ onlyIfTrusted: false });   // No conecta automaticamente
 
