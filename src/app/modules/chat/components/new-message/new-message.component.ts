@@ -38,13 +38,14 @@ export class NewMessageComponent implements OnInit {
       const text = this.formMessage.get('text')!.value;
       this.phantom.sendMessage(text)
         .then(txId => {
+          this.loading = false;
           console.log(`Transaction ID: ${txId}`);
           this.alertTxOK(`Transaction ID: ${txId}`);
           this.data.callback();
           this.closeModal();
-          this.loading = false;
         })
         .catch(err => {
+          this.loading = false;
           this.alertTxErr(err.message);
         });
     }

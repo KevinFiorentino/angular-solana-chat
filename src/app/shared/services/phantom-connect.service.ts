@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 // Lib principal de Solana Web3
 import * as web3 from '@solana/web3.js';
-import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Keypair } from '@solana/web3.js';
+import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 
 // Anchor es el framework de Rust para desarrollar contratos en Solana
@@ -151,7 +151,6 @@ export class PhantomConnectService {
   }
 
   updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
-
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
 
@@ -168,7 +167,6 @@ export class PhantomConnectService {
 
 
   deleteMessage(accountPublicKey: PublicKey): Promise<string> {
-
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
 

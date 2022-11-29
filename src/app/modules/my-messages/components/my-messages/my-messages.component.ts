@@ -54,7 +54,7 @@ export class MyMessagesComponent implements OnInit {
     this.dialog.open(UpdateMessageComponent, {
       data: {
         msg: msg,
-        callback: this.callbackUpdMessage.bind(this)
+        callback: this.callbackUpdMessages.bind(this)
       }
     });
   }
@@ -63,13 +63,14 @@ export class MyMessagesComponent implements OnInit {
     this.phantom.deleteMessage(msg.publicKey)
       .then(txId => {
         console.log(`Transaction ID: ${txId}`);
+        this.callbackUpdMessages();
       });
   }
 
-  async callbackUpdMessage() {
+  async callbackUpdMessages() {
     // Update all messages
-    /* this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);        // TODO: Improve performance
-    this.messages = this.utils.sortMessages(this.messages); */
+    this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);        // TODO: Improve performance
+    this.messages = this.utils.sortMessages(this.messages);
   }
 
 }

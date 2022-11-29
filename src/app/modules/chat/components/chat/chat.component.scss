@@ -53,7 +53,8 @@
             border-radius: 10px 0 10px 10px;
         }
     }
-    .wallet-disconnect {
+    .wallet-disconnect, .without-messages {
+        text-align: center;
         margin-top: 15px;
     }
     .new-message {

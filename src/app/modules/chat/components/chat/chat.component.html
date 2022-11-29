@@ -8,7 +8,7 @@
 
         <div *ngIf="!loading; else appLoading">
 
-            <div *ngIf="messages && messages.length > 0">
+            <div *ngIf="messages && messages.length > 0; else withoutMessages">
                 <div *ngFor="let m of messages">
                     <div class="message" ngClass="{{ walletAddress == m.account.owner.toString() ? 'message-right' : 'message-left' }}">
                         <div class="msg-box">
@@ -25,6 +25,12 @@
         </div>
 
     </div>
+
+    <ng-template #withoutMessages>
+        <div class="without-messages">
+            <p>There aren't messages yet.</p>
+        </div>
+    </ng-template>
 
     <ng-template #logout>
         <div class="wallet-disconnect">
