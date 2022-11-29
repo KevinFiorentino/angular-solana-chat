@@ -171,7 +171,7 @@ export class PhantomConnectService {
     const program = new anchor.Program(IDL, this.programID, provider);
 
     return program.methods
-      .deleteMessage('Some text...')
+      .deleteMessage()
       .accounts({
         message: accountPublicKey,
         user: provider.publicKey,

@@ -69,19 +69,9 @@ export type SolanaChat = {
           "name": "user",
           "isMut": true,
           "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "text",
-          "type": "string"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
@@ -179,19 +169,9 @@ export const IDL: SolanaChat = {
           "name": "user",
           "isMut": true,
           "isSigner": true
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "text",
-          "type": "string"
-        }
-      ]
+      "args": []
     }
   ],
   "accounts": [
@@ -220,6 +200,7 @@ export const IDL: SolanaChat = {
     "address": "AH5pQMYm4HzbMfw6CTbWS1rVFHgGpKKz53qQPH7a7pZ3"
   }
 };
+
 
 
 /*
