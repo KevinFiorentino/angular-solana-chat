@@ -48,15 +48,5 @@
 import 'zone.js';  // Included with Angular CLI.
 
 (window as any).global = window;
-global.Buffer = global.Buffer || require('buffer').Buffer;
 (window as any).process = { env: { DEBUG: undefined }, };
-
-declare global {
-  interface Window {
-    solana?: any;
-  }
-}
-
-/***************************************************************************************************
- * APPLICATION IMPORTS
- */
+global.Buffer = global.Buffer || require('buffer').Buffer;

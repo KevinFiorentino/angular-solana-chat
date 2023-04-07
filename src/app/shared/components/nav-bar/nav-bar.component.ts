@@ -5,11 +5,12 @@ import { UtilsService } from '@shared/services/utils.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss']
+  styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent implements OnInit {
 
   public walletAddress!: string;
+  public truncatedAddress!: string;
 
   constructor(
     public utils: UtilsService,
@@ -20,9 +21,10 @@ export class NavBarComponent implements OnInit {
     this.phantom.listenPublicKey
       .subscribe(pk => {
         this.walletAddress = pk ? pk.toString() : '';
+        this.truncatedAddress = this.utils.truncatedAddress(this.walletAddress)
       });
 
-    this.phantom.walletConnectAutomatically();
+    /* this.phantom.walletConnectAutomatically(); */
   }
 
   walletConnect() {

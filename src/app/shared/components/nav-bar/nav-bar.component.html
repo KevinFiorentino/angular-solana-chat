@@ -20,7 +20,7 @@
             </div>
 
             <ng-template #showAddress>
-                <span class="wallet-address">{{ utils.truncatedAddress(walletAddress) }}</span>
+                <span class="wallet-address">{{ truncatedAddress }}</span>
                 <button (click)="walletDisconnect()" class="btn-phantom btn-disconnect">
                     Disconnect
                 </button>
