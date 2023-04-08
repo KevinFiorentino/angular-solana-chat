@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 
 // Lib principal de Solana Web3
 import * as web3 from '@solana/web3.js';
-import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions } from '@solana/web3.js';
+import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Transaction, TransactionInstruction, Keypair, Signer } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 
 // Anchor es el framework de Rust para desarrollar contratos en Solana
 import * as anchor from '@project-serum/anchor';
+import { Wallet } from '@project-serum/anchor';
 
 // Custom Types
 import { IDL, SolanaChat } from '@shared/interfaces/solana-chat.idl';
@@ -28,9 +29,6 @@ export class PhantomConnectService {
   // Observable para guardar la clave pública del usuario y acceder desde cualquier componente
   private publicKey = new BehaviorSubject<PublicKey | null>(null);
   public listenPublicKey = this.publicKey.asObservable();
-
-  private phantomSubject = new BehaviorSubject<PhantomWalletAdapter | null>(null);
-  public listenPhantom = this.phantomSubject.asObservable();
 
   private walletAddress!: string | null;
 
@@ -56,10 +54,9 @@ export class PhantomConnectService {
     if (this.phantom && this.phantom.publicKey) {
       this.setAnchorProvider();
       this.publicKey.next(this.phantom.publicKey);
-      this.phantomSubject.next(this.phantom);
       this.walletAddress = this.phantom.publicKey.toString();
 
-      this.changeWalletListening();
+      // this.changeWalletListening();
     }
   }
 
@@ -84,7 +81,7 @@ export class PhantomConnectService {
     anchor.setProvider(provider);
   }
 
-  async changeWalletListening() {
+  /* async changeWalletListening() {
     this.phantom?.on('connect', this._accountChanged);
   }
 
@@ -92,7 +89,7 @@ export class PhantomConnectService {
     this.walletAddress = newPublicKey.toString();
     this.publicKey.next(newPublicKey);
     this.setAnchorProvider();
-  };
+  }; */
 
 
   /* ********** CONTRACT CONEXION ********** */
@@ -114,14 +111,14 @@ export class PhantomConnectService {
     }]);
   }
 
-  sendMessage(message: string): Promise<string> {     // Return Transaction ID
+  async sendMessage(message: string): Promise<string> {     // Return Transaction ID
     const { SystemProgram, Keypair } = anchor.web3;
 
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
     const kp = Keypair.generate();
 
-    return program.methods
+    const t = await program.methods
       .createMessage(message)
       .accounts({
         message: kp.publicKey,
@@ -129,36 +126,59 @@ export class PhantomConnectService {
         systemProgram: SystemProgram.programId,
       })
       .signers([kp])
-      .rpc();
+      .transaction();
+
+    return this.signAndSendTransactionWeb(t, kp);
   }
 
-  updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
+  async updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
 
-    console.log(message, accountPublicKey)
-
-    return program.methods
+    const i = await program.methods
       .updateMessage(message)
       .accounts({
         message: accountPublicKey,
         user: provider.publicKey,
       })
-      .rpc();
+      .transaction();
+
+    return this.signAndSendTransactionWeb(i);
   }
 
 
-  deleteMessage(accountPublicKey: PublicKey): Promise<string> {
+  async deleteMessage(accountPublicKey: PublicKey): Promise<string> {
     const provider = anchor.getProvider();
     const program = new anchor.Program(IDL, this.programID, provider);
 
-    return program.methods
+    const i = await program.methods
       .deleteMessage()
       .accounts({
         message: accountPublicKey,
         user: provider.publicKey,
       })
-      .rpc();
+      .transaction();
+
+    return this.signAndSendTransactionWeb(i);
+  }
+
+
+  async signAndSendTransactionWeb(t: Transaction, kp?: Signer): Promise<string> {
+    const provider = anchor.getProvider();
+
+    t.feePayer = provider.publicKey;
+
+    const latestBlockHash = await this.connection.getLatestBlockhash();
+    t.recentBlockhash = latestBlockHash.blockhash;
+    t.lastValidBlockHeight = latestBlockHash.lastValidBlockHeight;
+
+    if (kp)
+      t.sign(kp)
+
+    if (this.phantom)
+      t = await this.phantom?.signTransaction(t);
+
+    return this.connection.sendRawTransaction(t.serialize({ verifySignatures: false, requireAllSignatures: false }));
   }
 
 }
