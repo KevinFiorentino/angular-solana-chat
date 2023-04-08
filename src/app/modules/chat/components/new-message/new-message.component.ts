@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChatProgramService } from '@shared/services/chat-program.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,12 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class NewMessageComponent implements OnInit {
 
-  public formMessage!: FormGroup;
+  public formMessage!: UntypedFormGroup;
   public loading = false;
 
   constructor(
     private snackBar: MatSnackBar,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private chatProgram: ChatProgramService,
     private dialog: MatDialogRef<NewMessageComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
