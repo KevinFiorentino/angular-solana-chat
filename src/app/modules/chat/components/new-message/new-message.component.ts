@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PhantomConnectService } from '@shared/services/phantom-connect.service';
+import { ChatProgramService } from '@shared/services/chat-program.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -17,7 +17,7 @@ export class NewMessageComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
-    private phantom: PhantomConnectService,
+    private chatProgram: ChatProgramService,
     private dialog: MatDialogRef<NewMessageComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
@@ -36,7 +36,7 @@ export class NewMessageComponent implements OnInit {
     if (this.formMessage.valid) {
       this.loading = true;
       const text = this.formMessage.get('text')!.value;
-      this.phantom.sendMessage(text)
+      this.chatProgram.sendMessage(text)
         .then(txId => {
           this.loading = false;
           console.log(`Transaction ID: ${txId}`);

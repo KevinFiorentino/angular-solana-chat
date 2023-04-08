@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChatProgramService } from '@shared/services/chat-program.service';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
 import { NewMessageComponent } from '@modules/chat/components/new-message/new-message.component';
@@ -21,6 +22,7 @@ export class ChatComponent implements OnInit {
     public utils: UtilsService,
     private dialog: MatDialog,
     private phantom: PhantomConnectService,
+    private chatProgram: ChatProgramService,
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +35,7 @@ export class ChatComponent implements OnInit {
       .subscribe(async (pk: PublicKey | null) => {
         this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress) {
-          this.messages = await this.phantom.getAllMessages();
+          this.messages = await this.chatProgram.getAllMessages();
           this.messages = this.utils.sortMessages(this.messages);
           this.loading = false;
         }
@@ -58,7 +60,7 @@ export class ChatComponent implements OnInit {
 
   async callbackNewMessage() {
     // Update all messages
-    this.messages = await this.phantom.getAllMessages();        // TODO: Improve performance
+    this.messages = await this.chatProgram.getAllMessages();        // TODO: Improve performance
     this.messages = this.utils.sortMessages(this.messages);
   }
 

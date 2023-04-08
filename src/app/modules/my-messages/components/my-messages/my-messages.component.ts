@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { ChatProgramService } from '@shared/services/chat-program.service';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
 import { UpdateMessageComponent } from '@modules/chat/components/update-message/update-message.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PublicKey } from '@solana/web3.js';
 import { format } from 'date-fns';
-import { SolanaChat } from '@shared/interfaces/solana-chat.idl';
+import { SolanaChat } from '@shared/idls/solana-chat.idl';
 import { ProgramAccount, IdlTypes }from '@project-serum/anchor';
 
 @Component({
@@ -23,6 +24,7 @@ export class MyMessagesComponent implements OnInit {
     public utils: UtilsService,
     private dialog: MatDialog,
     private phantom: PhantomConnectService,
+    private chatProgram: ChatProgramService
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +37,7 @@ export class MyMessagesComponent implements OnInit {
       .subscribe(async (pk: PublicKey | null) => {
         this.walletAddress = pk ? pk.toString() : '';
         if (this.walletAddress) {
-          this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);
+          this.messages = await this.chatProgram.getMessagesByWalletAddress(this.walletAddress);
           this.messages = this.utils.sortMessages(this.messages);
           this.loading = false;
         }
@@ -60,7 +62,7 @@ export class MyMessagesComponent implements OnInit {
   }
 
   deleteMessage(msg: ProgramAccount<IdlTypes<SolanaChat>>): void {
-    this.phantom.deleteMessage(msg.publicKey)
+    this.chatProgram.deleteMessage(msg.publicKey)
       .then(txId => {
         console.log(`Transaction ID: ${txId}`);
         this.callbackUpdMessages();
@@ -69,7 +71,7 @@ export class MyMessagesComponent implements OnInit {
 
   async callbackUpdMessages() {
     // Update all messages
-    this.messages = await this.phantom.getMessagesByWalletAddress(this.walletAddress);        // TODO: Improve performance
+    this.messages = await this.chatProgram.getMessagesByWalletAddress(this.walletAddress);        // TODO: Improve performance
     this.messages = this.utils.sortMessages(this.messages);
   }
 
