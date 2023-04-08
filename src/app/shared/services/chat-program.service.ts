@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PublicKey } from '@solana/web3.js';
 import { PhantomConnectService } from './phantom-connect.service';
 import { IDL, SolanaChat } from '@shared/idls/solana-chat.idl';
-import * as anchor from '@project-serum/anchor';
+import { web3, Program, ProgramAccount, getProvider, IdlTypes } from '@project-serum/anchor';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +18,15 @@ export class ChatProgramService {
 
   /* ********** CONTRACT CONNECTION ********** */
 
-  getAllMessages(): Promise<anchor.ProgramAccount<anchor.IdlTypes<SolanaChat>>[]> {
-    const provider = anchor.getProvider();
-    const program = new anchor.Program(IDL, this.programID, provider);
+  getAllMessages(): Promise<ProgramAccount<IdlTypes<SolanaChat>>[]> {
+    const provider = getProvider();
+    const program = new Program(IDL, this.programID, provider);
     return program.account.message.all();
   }
 
-  getMessagesByWalletAddress(walletAddress: string): Promise<anchor.ProgramAccount<anchor.IdlTypes<SolanaChat>>[]> {
-    const provider = anchor.getProvider();
-    const program = new anchor.Program(IDL, this.programID, provider);
+  getMessagesByWalletAddress(walletAddress: string): Promise<ProgramAccount<IdlTypes<SolanaChat>>[]> {
+    const provider = getProvider();
+    const program = new Program(IDL, this.programID, provider);
     return program.account.message.all([{
       memcmp: {
         offset: 8,
@@ -36,10 +36,10 @@ export class ChatProgramService {
   }
 
   async sendMessage(message: string): Promise<string> {     // Return Transaction ID
-    const { SystemProgram, Keypair } = anchor.web3;
+    const { SystemProgram, Keypair } = web3;
 
-    const provider = anchor.getProvider();
-    const program = new anchor.Program(IDL, this.programID, provider);
+    const provider = getProvider();
+    const program = new Program(IDL, this.programID, provider);
     const kp = Keypair.generate();
 
     const t = await program.methods
@@ -56,8 +56,8 @@ export class ChatProgramService {
   }
 
   async updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
-    const provider = anchor.getProvider();
-    const program = new anchor.Program(IDL, this.programID, provider);
+    const provider = getProvider();
+    const program = new Program(IDL, this.programID, provider);
 
     const i = await program.methods
       .updateMessage(message)
@@ -71,8 +71,8 @@ export class ChatProgramService {
   }
 
   async deleteMessage(accountPublicKey: PublicKey): Promise<string> {
-    const provider = anchor.getProvider();
-    const program = new anchor.Program(IDL, this.programID, provider);
+    const provider = getProvider();
+    const program = new Program(IDL, this.programID, provider);
 
     const i = await program.methods
       .deleteMessage()

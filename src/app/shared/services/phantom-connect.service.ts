@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Transaction, Signer } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BehaviorSubject } from 'rxjs';
-import * as anchor from '@project-serum/anchor';
+import { AnchorProvider, getProvider, setProvider } from '@project-serum/anchor';
 
 @Injectable({
   providedIn: 'root'
@@ -61,12 +61,12 @@ export class PhantomConnectService {
     const opts: ConfirmOptions = {
       preflightCommitment: this.comm,
     };
-    const provider = new anchor.AnchorProvider(
+    const provider = new AnchorProvider(
       this.connection,
       (window as any).solana,
       opts
     );
-    anchor.setProvider(provider);
+    setProvider(provider);
   }
 
   /* async changeWalletListening() {
@@ -83,7 +83,7 @@ export class PhantomConnectService {
   /* ********** TRANSACTION SIGN ********** */
 
   async signAndSendTransactionWeb(t: Transaction, signer?: Signer): Promise<string> {
-    const provider = anchor.getProvider();
+    const provider = getProvider();
 
     t.feePayer = provider.publicKey;
 
