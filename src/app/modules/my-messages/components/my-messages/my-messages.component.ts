@@ -39,6 +39,9 @@ export class MyMessagesComponent implements OnInit {
         if (this.walletAddress) {
           this.messages = await this.chatProgram.getMessagesByWalletAddress(this.walletAddress);
           this.messages = this.utils.sortMessages(this.messages);
+
+          console.log('this.messages', this.messages)
+
           this.loading = false;
         }
       });

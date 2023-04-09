@@ -44,7 +44,7 @@ export class PhantomConnectService {
       this.publicKey.next(this.phantom.publicKey);
       this.walletAddress = this.phantom.publicKey.toString();
 
-      // this.changeWalletListening();
+      this.changeWalletListening();
     }
   }
 
@@ -69,7 +69,7 @@ export class PhantomConnectService {
     setProvider(provider);
   }
 
-  /* async changeWalletListening() {
+  async changeWalletListening() {
     this.phantom?.on('connect', this._accountChanged);
   }
 
@@ -77,7 +77,7 @@ export class PhantomConnectService {
     this.walletAddress = newPublicKey.toString();
     this.publicKey.next(newPublicKey);
     this.setAnchorProvider();
-  }; */
+  };
 
 
   /* ********** TRANSACTION SIGN ********** */
