@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Transaction, Signer } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BehaviorSubject } from 'rxjs';
@@ -20,7 +20,9 @@ export class PhantomConnectService {
 
   private walletAddress!: string | null;
 
-  constructor() {}
+  constructor(
+    private ngZone: NgZone,
+  ) {}
 
   /* ********** WALLET CONEXION ********** */
 
@@ -74,9 +76,11 @@ export class PhantomConnectService {
   }
 
   private _accountChanged = (newPublicKey: PublicKey) => {
-    this.walletAddress = newPublicKey.toString();
-    this.publicKey.next(newPublicKey);
-    this.setAnchorProvider();
+    this.ngZone.run(() => {
+      this.walletAddress = newPublicKey.toString();
+      this.publicKey.next(newPublicKey);
+      this.setAnchorProvider();
+    });
   };
 
 

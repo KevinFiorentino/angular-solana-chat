@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
 
@@ -15,13 +15,15 @@ export class NavBarComponent implements OnInit {
   constructor(
     public utils: UtilsService,
     private phantom: PhantomConnectService,
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
     this.phantom.listenPublicKey
       .subscribe(pk => {
         this.walletAddress = pk ? pk.toString() : '';
-        this.truncatedAddress = this.utils.truncatedAddress(this.walletAddress)
+        this.truncatedAddress = this.utils.truncatedAddress(this.walletAddress);
+        // this.cdr.detectChanges();
       });
 
     /* this.phantom.walletConnectAutomatically(); */
