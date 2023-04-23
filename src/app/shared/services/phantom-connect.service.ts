@@ -1,8 +1,9 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Transaction, Signer } from '@solana/web3.js';
+import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Transaction, Signer, Keypair } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BehaviorSubject } from 'rxjs';
 import { AnchorProvider, getProvider, setProvider } from '@project-serum/anchor';
+import * as bs58 from 'bs58';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +38,20 @@ export class PhantomConnectService {
   } */
 
   async walletConnect() {
+
+    const pk = new Keypair();
+
+    const params = new URLSearchParams();
+    params.append('app_url', 'https://angular-solana-chat.vercel.app/');
+    params.append('dapp_encryption_public_key', pk.publicKey.toString());
+    params.append('redirect_link', 'https://angular-solana-chat.vercel.app/');
+    params.append('cluster', 'devnet');
+
+    const childWindow = window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
+    window.addEventListener('message', this.handleMessage.bind(this), false);
+
     // https://github.com/solana-labs/wallet-adapter/tree/master/packages/wallets/phantom
-    this.phantom = new PhantomWalletAdapter();
+    /* this.phantom = new PhantomWalletAdapter();
     await this.phantom.connect();
 
     if (this.phantom && this.phantom.publicKey) {
@@ -47,7 +60,14 @@ export class PhantomConnectService {
       this.walletAddress = this.phantom.publicKey.toString();
 
       this.changeWalletListening();
-    }
+    } */
+  }
+
+  handleMessage(event: MessageEvent) {
+    console.log(event.data);
+    setTimeout(() => {
+      alert(event.data);
+    }, 2000);
   }
 
   async walletDisconnect() {
