@@ -3,7 +3,7 @@ import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Trans
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BehaviorSubject } from 'rxjs';
 import { AnchorProvider, getProvider, setProvider } from '@project-serum/anchor';
-import * as bs58 from 'bs58';
+import bs58 from 'bs58';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +39,10 @@ export class PhantomConnectService {
 
   async walletConnect() {
 
+    // phantom_encryption_public_key=3eCtk2jWGwABmZwUWziG6VETowDTSgaHRLuSuuTD6Ps4
+    // nonce=NZW7ACCJ36TrtuJjvjmkHWyPPqbiCyb61
+    // data=4sTYBxZdd3TnG4CTis55KCiJeShuT7eJ9b8f9UB4WrzVMjpKRshjKTW5aeR39tLCmY396owtiapwrXKzXAiHsh25gSktQnCaMfdX5m21BykzaZGVU66ik1PKSviL776gvYR7Ji4N9dzQfc1NV6D8Cz3nhDXCRQeUwu3Y2eradRMsDFvrXjMBYu9NN6TCABtkTFk4a8WkpC6nTKnFU3dah7Bx8jvzJkXSyWWPzJzmgi1k21JMc7pZ7XiC9vG359vazSMAiLZtyvGA5tnSXdgjRDSSgFcinArLM7fQ5XCAcrVtqLBi8J3EyJDwQ8aRhpNXwEVKcHzYjdtbkRqcfTKnFa3qEcNY9nYDAcN1HoqR43i39R5NGcnTZWcukwsYoXWraeybPKEjfSjKb47jPAV4h8gCdLDUHwcMS2kJebB8asqYkgk5e6B2dmgzi5eNNbMqXkyzcrANQm
+
     const pk = new Keypair();
 
     const params = new URLSearchParams();
@@ -47,8 +51,13 @@ export class PhantomConnectService {
     params.append('redirect_link', 'https://angular-solana-chat.vercel.app/');
     params.append('cluster', 'devnet');
 
-    const childWindow = window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
-    window.addEventListener('message', this.handleMessage.bind(this), false);
+    params.append('target', '_self');
+
+    window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
+
+
+
+
 
     // https://github.com/solana-labs/wallet-adapter/tree/master/packages/wallets/phantom
     /* this.phantom = new PhantomWalletAdapter();
@@ -61,13 +70,6 @@ export class PhantomConnectService {
 
       this.changeWalletListening();
     } */
-  }
-
-  handleMessage(event: MessageEvent) {
-    console.log(event.data);
-    setTimeout(() => {
-      alert(event.data);
-    }, 2000);
   }
 
   async walletDisconnect() {
