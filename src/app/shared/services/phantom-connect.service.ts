@@ -48,10 +48,8 @@ export class PhantomConnectService {
     const params = new URLSearchParams();
     params.append('app_url', 'https://angular-solana-chat.vercel.app/');
     params.append('dapp_encryption_public_key', pk.publicKey.toString());
-    params.append('redirect_link', 'https://angular-solana-chat.vercel.app/');
+    params.append('redirect_link', 'https://angular-solana-chat.vercel.app?target=_self');
     params.append('cluster', 'devnet');
-
-    params.append('target', '_self');
 
     window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
 
