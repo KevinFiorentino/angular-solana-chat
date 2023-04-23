@@ -86,7 +86,7 @@ export class PhantomRedirectComponent implements OnInit {
 
     const params = new URLSearchParams();
     params.append('app_url', 'https://angular-solana-chat.vercel.app/');
-    params.append('dapp_encryption_public_key', this.pk.publicKey.toString());
+    params.append('dapp_encryption_public_key', bs58.encode(this.pk.publicKey));
     params.append('redirect_link', 'https://angular-solana-chat.vercel.app?target=_self');
     params.append('cluster', 'devnet');
 
