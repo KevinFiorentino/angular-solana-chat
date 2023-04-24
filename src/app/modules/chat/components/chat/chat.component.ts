@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatProgramService } from '@shared/services/chat-program.service';
+import { ChatProgramService } from '@shared/services/solana-contracts/chat-program.service';
 import { PhantomConnectService } from '@shared/services/phantom/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
 import { NewMessageComponent } from '@modules/chat/components/new-message/new-message.component';

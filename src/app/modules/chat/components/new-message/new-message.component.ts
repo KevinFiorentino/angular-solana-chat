@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ChatProgramService } from '@shared/services/chat-program.service';
+import { ChatProgramService } from '@shared/services/solana-contracts/chat-program.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
