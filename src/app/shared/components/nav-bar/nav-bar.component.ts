@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { PhantomConnectService } from '@shared/services/phantom-connect.service';
+import { PhantomConnectService } from '@shared/services/phantom/phantom-connect.service';
 import { UtilsService } from '@shared/services/utils.service';
 
 @Component({

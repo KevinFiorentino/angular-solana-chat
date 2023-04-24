@@ -21,7 +21,7 @@ export class PhantomRedirectComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams
-      .subscribe(async (params: Params) => {
+      .subscribe((params: Params) => {
 
       });
   }
@@ -41,47 +41,44 @@ export class PhantomRedirectComponent implements OnInit {
 
     /*
 
-    publickKey=
-    privateKey=
+    publickKey=FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35
+    privateKey=4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH
 
-    phantom_encryption_public_key=
-    nonce=
-    data=
+    phantom_encryption_public_key=9KWwz3fUWtstbPCEu2MihBMo2dKVhyZC9qaDRYWFMwTZ
+    nonce=Fc1c7NLzxBS8MESbNBjRGw1bvnLyKJpUc
+    data=2ADoUFbVPP5pfanHcKCFNzgvg4Vw51B48Td6qBxdpNp7wCCPCr77HU7YzU38RQCmPiTb1RWkhnGZkp5dA5V3GqwX6AGKKmSorJcy1phwNDhRhWGqE2aN1JTacsPMYKMXZtGsdaWc1hYdoWAwXUKTsaSvzAQcPLkiz7LkY4yzY258LR6wDWd7c4EbvcvmdVfH2v6aWNE7w467dD9DHN2T5URsMAzTK5tFAErEUv13yVZFG46vZPcpSrF3EUsUgDHVCKhCiLYoYU4MYQJAKEN47HFBY45uQzxcj4pMMvCqE671WnkwHPGPGM7Jo6RfJwf1kmCpB66jWNBc5wmorzyE1S8qqowf4yDt2kDkz1R2QTb4gvqAwuqu36Mak2LbnUa6vqcAKFr1iq5NHsZoLjg2n54keVW4DWb2wxviuFGH7YvFuYb9kniRxR3QQRymaEsk5Ksj2J5Ng
 
     HeDn...AL3z
 
     */
 
-    /* const phantom_encryption_public_key = '59kWXFtBfWdyk6cGhaShGgkfg6HAJJf493m6vDPS1W2E'
-    const data = '6SoGJ6a4TZKVyZaUMNNWx9fnya3MPNpRoH4PkGN2kG3taWRgFwNxw5WokiJTmn7c2xKJNoaXS3p6NwxWk7LqTPG2Z8RihuFCr5xXef8kdVSw2MiX8JMfKcbTEJFrQqxSSMbKgpF2KtMHhhNCiJoXjG96HqrhYmmCL5srNj495Xxef3dNFnMo4Q2rWisdrTNpHHAHuoKLTQwHEEUgEoT1oBng7YADQHRywzd2isMM5YzaDkXi29Am8NiKhKciDnqkkh96F1whwHDmhNzb6u4e758sd9kbkxd7UFWXsRcgUzLJqPxhKpTmmoarr6SXCDBb9RM6YekJRSFWt2UJkxaLQ4Nh2rGuMjG1yJ6x29Fqbpzb4ntMhejgirWPPo2p3cZzGVpNyia2EuK76F37BtJUwqAn3ZfTxpF3zNygwANHxD54PY8pGc59hHGv7BcgsS1feHsCj3Cyxw'
-    const nonce = 'Dx7WhR457CVZJ5BoxxJWZ31jhHFZHdajh'
+    const phantom_encryption_public_key = '9KWwz3fUWtstbPCEu2MihBMo2dKVhyZC9qaDRYWFMwTZ'
+    const nonce = 'Fc1c7NLzxBS8MESbNBjRGw1bvnLyKJpUc'
+    const data = '2ADoUFbVPP5pfanHcKCFNzgvg4Vw51B48Td6qBxdpNp7wCCPCr77HU7YzU38RQCmPiTb1RWkhnGZkp5dA5V3GqwX6AGKKmSorJcy1phwNDhRhWGqE2aN1JTacsPMYKMXZtGsdaWc1hYdoWAwXUKTsaSvzAQcPLkiz7LkY4yzY258LR6wDWd7c4EbvcvmdVfH2v6aWNE7w467dD9DHN2T5URsMAzTK5tFAErEUv13yVZFG46vZPcpSrF3EUsUgDHVCKhCiLYoYU4MYQJAKEN47HFBY45uQzxcj4pMMvCqE671WnkwHPGPGM7Jo6RfJwf1kmCpB66jWNBc5wmorzyE1S8qqowf4yDt2kDkz1R2QTb4gvqAwuqu36Mak2LbnUa6vqcAKFr1iq5NHsZoLjg2n54keVW4DWb2wxviuFGH7YvFuYb9kniRxR3QQRymaEsk5Ksj2J5Ng'
 
-    const sharedSecret = bs58.decode('4eJn2aSnEAi7eWQszxqKRQDfS7cBnfxToEpzso4aSxRDknEWTYSPt8P3ftzGswqZUSGUW7Xubam2joQxU6AyuiHp')
-    console.log('sharedSecret', sharedSecret)
+    const sharedSecret = bs58.decode('4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH')
 
-    const kp = Keypair.fromSecretKey(sharedSecret) */
-
-
-    /* const sharedSecretDapp = nacl.box.before(
+    const sharedSecretDapp = nacl.box.before(
       bs58.decode(phantom_encryption_public_key!),
-      kp.secretKey
+      sharedSecret
     );
 
-    console.log('sharedSecretDapp', sharedSecretDapp) */
-
-    /* const decryptedData = nacl.box.open.after(
+    const decryptedData = nacl.box.open.after(
       bs58.decode(data),
       bs58.decode(nonce),
       sharedSecretDapp
     );
 
-    console.log('decryptedData', decryptedData) */
+    if (!decryptedData)
+      return
+
+    console.log('decryptedData', JSON.parse(Buffer.from(decryptedData).toString('utf8')))
 
 
 
 
 
-    if (!this.pk)
+    /* if (!this.pk)
       return
 
     const params = new URLSearchParams();
@@ -90,7 +87,7 @@ export class PhantomRedirectComponent implements OnInit {
     params.append('redirect_link', 'https://angular-solana-chat.vercel.app?target=_self');
     params.append('cluster', 'devnet');
 
-    window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
+    window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`); */
 
   }
 

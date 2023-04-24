@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PublicKey } from '@solana/web3.js';
-import { PhantomConnectService } from './phantom-connect.service';
+import { PhantomConnectService } from './phantom/phantom-connect.service';
 import { IDL, SolanaChat } from '@shared/idls/solana-chat.idl';
 import { web3, Program, ProgramAccount, getProvider, IdlTypes } from '@project-serum/anchor';
 
