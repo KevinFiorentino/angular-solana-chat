@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { PhantomConnectService } from '@shared/services/phantom/phantom-connect.service';
+import { PhantomDeeplinkService } from '@shared/services/phantom/phantom-deeplink.service';
 import { UtilsService } from '@shared/services/utils.service';
 
 @Component({
@@ -15,7 +16,7 @@ export class NavBarComponent implements OnInit {
   constructor(
     public utils: UtilsService,
     private phantom: PhantomConnectService,
-    private cdr: ChangeDetectorRef,
+    private phantomDeeplink: PhantomDeeplinkService,
   ) { }
 
   ngOnInit(): void {
@@ -23,14 +24,15 @@ export class NavBarComponent implements OnInit {
       .subscribe(pk => {
         this.walletAddress = pk ? pk.toString() : '';
         this.truncatedAddress = this.utils.truncatedAddress(this.walletAddress);
-        // this.cdr.detectChanges();
       });
-
-    /* this.phantom.walletConnectAutomatically(); */
   }
 
   walletConnect() {
-    this.phantom.walletConnect();
+    const isMobile = this.phantomDeeplink.isMobileDevice()
+    if (isMobile)
+      this.phantomDeeplink.walletConnect();
+    else
+      this.phantom.walletConnect();
   }
 
   walletDisconnect() {

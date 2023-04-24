@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Keypair } from '@solana/web3.js';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
@@ -29,10 +28,20 @@ export class PhantomRedirectComponent implements OnInit {
   setPK(): void {
     this.pk = nacl.box.keyPair();
 
+    console.log('PK 1', this.pk)
+
     const data = {
       publickKey: bs58.encode(this.pk.publicKey),
       privateKey: bs58.encode(this.pk.secretKey)
     }
+
+    const json = JSON.stringify(data)
+
+    console.log('PK 2', json)
+
+    console.log('PK 3', JSON.parse(json))
+
+    console.log('PK 4', data)
 
     this.pkString = JSON.stringify(data);
   }

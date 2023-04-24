@@ -3,7 +3,7 @@ import { Connection, PublicKey, Commitment, clusterApiUrl, ConfirmOptions, Trans
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { BehaviorSubject } from 'rxjs';
 import { AnchorProvider, getProvider, setProvider } from '@project-serum/anchor';
-import bs58 from 'bs58';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,17 +25,8 @@ export class PhantomConnectService {
     private ngZone: NgZone,
   ) {}
 
+
   /* ********** WALLET CONEXION ********** */
-
-  /* async walletConnectAutomatically() {
-    const { solana } = window as PhantomSolanaTypes;
-    const response = await solana?.connect({ onlyIfTrusted: true })     // Conecta automaticamente si la wallet tiene permisos
-
-    this.publicKey.next(response?.publicKey);
-    this.walletAddress = response?.publicKey.toString();
-
-    this.changeWalletListening();
-  } */
 
   async walletConnect() {
     // https://github.com/solana-labs/wallet-adapter/tree/master/packages/wallets/phantom
