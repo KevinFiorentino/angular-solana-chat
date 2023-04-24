@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
+import { PhantomConnectService } from './phantom-connect.service';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
@@ -10,15 +11,20 @@ const PHANTOM_SESSION_DATA = 'PHANTOM_SESSION_DATA';
 })
 export class PhantomDeeplinkService {
 
-  private sessionKeypair?: KeypairEncoded;     // Temporary keypair to generate a secure connection between this app and Phantom
+  // https://docs.phantom.app/phantom-deeplinks/provider-methods/connect
 
-  private phantomSession?: string;             // Session generated later the connection with Phantom, it is necessary to send & sign transactions
-  private nonce?: string;                      // Idem 'phantomSession'
+  private sessionKeypair?: KeypairEncoded;      // Temporary keypair to generate a secure connection between this app and Phantom
 
-  public isAndroid = false;                    // Android Check
-  public isIphone = false;                     // IOS Check
+  private phantomEncryptionPublicKey?: string;  // Public key used for Phantom for end-to-end encryption
+  private phantomSession?: string;              // Session generated later the connection with Phantom, it is necessary to send & sign transactions
+  private nonce?: string;                       // Idem 'phantomSession'
 
-  constructor() {
+  public isAndroid = false;                     // Android Check
+  public isIphone = false;                      // IOS Check
+
+  constructor(
+    private phantom: PhantomConnectService,
+  ) {
     // Private keypair
     this.getAndSaveSessionKeypair();
 
@@ -32,7 +38,7 @@ export class PhantomDeeplinkService {
     return this.isAndroid || this.isIphone ? true : false;
   }
 
-  async walletConnect() {
+  walletConnect() {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
@@ -49,7 +55,26 @@ export class PhantomDeeplinkService {
     window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
   }
 
-  async walletDisconnect() {
+  walletConnectRedirect(
+    phantom_encryption_public_key: string,
+    nonce: string,
+    data: string,
+  ) {
+
+    const info = this.decryptDataFromPhantom(
+      phantom_encryption_public_key,
+      nonce,
+      data
+    );
+
+    this.phantomEncryptionPublicKey = phantom_encryption_public_key;
+    this.nonce = nonce;
+
+    this.phantomSession = info.session;
+    this.phantom.walletConnetThroughDeeplink(info.public_key);
+  }
+
+  walletDisconnect() {
 
   }
 
@@ -64,8 +89,8 @@ export class PhantomDeeplinkService {
 
   decryptDataFromPhantom(
     phantom_encryption_public_key: string,
-    data: string,
     nonce: string,
+    data: string,
   ): PhantomDeeplinkConnection {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
