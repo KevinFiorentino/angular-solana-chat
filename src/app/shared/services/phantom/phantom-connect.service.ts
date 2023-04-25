@@ -34,18 +34,19 @@ export class PhantomConnectService {
     await this.phantom.connect();
 
     if (this.phantom && this.phantom.publicKey) {
+      this.walletAddress = this.phantom.publicKey.toString();
       this.setAnchorProvider();
       this.publicKey.next(this.phantom.publicKey);
-      this.walletAddress = this.phantom.publicKey.toString();
 
       this.changeWalletListening();
     }
   }
 
   walletConnetThroughDeeplink(publicKey: string) {
+    // The order is important due to we use this.walletAddress to set the AnchorProvider
+    this.walletAddress = publicKey;
     this.setAnchorProviderMock();
     this.publicKey.next(new PublicKey(publicKey));
-    this.walletAddress = publicKey;
   }
 
   async walletDisconnect() {
