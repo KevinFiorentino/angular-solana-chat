@@ -108,4 +108,15 @@ export class PhantomRedirectComponent implements OnInit {
     console.log('onSignMessage', params)
   }
 
+
+  previousSessionData?: string;
+  data?: string;
+
+  seeData() {
+    const PHANTOM_SESSION_DATA = 'PHANTOM_SESSION_DATA';
+    this.previousSessionData = JSON.stringify(localStorage.getItem(PHANTOM_SESSION_DATA));
+
+    this.data = this.phantomDeeplink.getData();
+  }
+
 }

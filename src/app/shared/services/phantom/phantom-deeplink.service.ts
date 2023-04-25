@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
 import { PhantomConnectService } from './phantom-connect.service';
-import { environment } from "@environments/environment";
+import { environment } from '@environments/environment';
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
@@ -31,12 +31,16 @@ export class PhantomDeeplinkService {
 
     // User agent
     const ua = navigator.userAgent.toLowerCase();
-    this.isAndroid = ua.indexOf("android") > -1;
-    this.isIphone = ua.indexOf("iphone") > -1;
+    this.isAndroid = ua.indexOf('android') > -1;
+    this.isIphone = ua.indexOf('iphone') > -1;
   }
 
   isMobileDevice(): boolean {
     return this.isAndroid || this.isIphone ? true : false;
+  }
+
+  getData(): string {
+    return this.phantomEncryptionPublicKey + ' - ' + this.phantomSession + ' - ' + this.nonce + ' - ' + JSON.stringify(this.sessionKeypair);
   }
 
 
