@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PhantomRedirectComponent } from './components/phantom-redirect/phantom-redirect.component';
 
 const routes: Routes = [
-  { path: 'phantom', component: PhantomRedirectComponent }
+  { path: 'phantom/:method', component: PhantomRedirectComponent }
 ];
 
 @NgModule({

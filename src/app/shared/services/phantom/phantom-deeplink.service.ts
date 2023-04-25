@@ -56,18 +56,22 @@ export class PhantomDeeplinkService {
   }
 
   walletConnectRedirect(
-    phantom_encryption_public_key: string,
+    phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
   ) {
 
+    console.log('this.sessionKeypair', this.sessionKeypair)
+
     const info = this.decryptDataFromPhantom(
-      phantom_encryption_public_key,
+      phantomEncryptionPublicKey,
       nonce,
       data
     );
 
-    this.phantomEncryptionPublicKey = phantom_encryption_public_key;
+
+
+    this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
     this.nonce = nonce;
 
     this.phantomSession = info.session;
@@ -88,7 +92,7 @@ export class PhantomDeeplinkService {
   }
 
   decryptDataFromPhantom(
-    phantom_encryption_public_key: string,
+    phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
   ): PhantomDeeplinkConnection {
@@ -96,14 +100,14 @@ export class PhantomDeeplinkService {
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const sharedSecretDapp = nacl.box.before(
-      bs58.decode(phantom_encryption_public_key!),
-      new Uint8Array(Buffer.from(this.sessionKeypair.secretKey))
+      bs58.decode(phantomEncryptionPublicKey!),
+      bs58.decode(this.sessionKeypair.secretKey),
     );
 
     const decryptedData = nacl.box.open.after(
       bs58.decode(data),
       bs58.decode(nonce),
-      sharedSecretDapp
+      sharedSecretDapp,
     );
 
     if (!decryptedData)
@@ -118,6 +122,12 @@ export class PhantomDeeplinkService {
   ****************************** */
 
   getAndSaveSessionKeypair() {
+
+    /* this.sessionKeypair = {
+      publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
+      secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
+    } */
+
     const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
     if (previousSessionData) {
       // Save previous keypair
