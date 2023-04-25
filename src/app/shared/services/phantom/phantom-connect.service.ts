@@ -82,7 +82,7 @@ export class PhantomConnectService {
       signTransaction: () => Promise.reject(),
       signAllTransactions: () => Promise.reject(),
     };
-    const provider = new AnchorProvider(this.connection, (window as any). solana,opts);
+    const provider = new AnchorProvider(this.connection, wallet, opts);
     setProvider(provider);
   }
 
