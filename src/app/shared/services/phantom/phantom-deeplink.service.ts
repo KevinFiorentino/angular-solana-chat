@@ -39,10 +39,6 @@ export class PhantomDeeplinkService {
     return this.isAndroid || this.isIphone ? true : false;
   }
 
-  getData(): string {
-    return this.phantomEncryptionPublicKey + ' - ' + this.phantomSession + ' - ' + this.nonce + ' - ' + JSON.stringify(this.sessionKeypair);
-  }
-
 
   /* ******************************
        PHANTOM DEEPLINK METHODS

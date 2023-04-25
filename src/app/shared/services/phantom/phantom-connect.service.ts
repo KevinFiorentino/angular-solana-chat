@@ -26,11 +26,6 @@ export class PhantomConnectService {
   ) {}
 
 
-  getWallet() {
-    return this.walletAddress;
-  }
-
-
   /* ********** WALLET CONEXION ********** */
 
   async walletConnect() {
@@ -48,11 +43,9 @@ export class PhantomConnectService {
   }
 
   walletConnetThroughDeeplink(publicKey: string) {
-    this.ngZone.run(() => {
-      /* this.setAnchorProvider(); */
-      this.publicKey.next(new PublicKey(publicKey));
-      this.walletAddress = publicKey;
-    });
+    this.setAnchorProviderMock();
+    this.publicKey.next(new PublicKey(publicKey));
+    this.walletAddress = publicKey;
   }
 
   async walletDisconnect() {
@@ -70,14 +63,26 @@ export class PhantomConnectService {
   /* ********** NETWORK CONEXION ********** */
 
   setAnchorProvider(): void {
-    const opts: ConfirmOptions = {
-      preflightCommitment: this.comm,
-    };
+    const opts: ConfirmOptions = { preflightCommitment: this.comm };
     const provider = new AnchorProvider(
       this.connection,
       (window as any).solana,
       opts
     );
+    setProvider(provider);
+  }
+
+  setAnchorProviderMock(): void {
+    if (!this.walletAddress)
+      return
+
+    const opts: ConfirmOptions = { preflightCommitment: this.comm };
+    const wallet = {
+      publicKey: new PublicKey(this.walletAddress),
+      signTransaction: () => Promise.reject(),
+      signAllTransactions: () => Promise.reject(),
+    };
+    const provider = new AnchorProvider(this.connection, (window as any). solana,opts);
     setProvider(provider);
   }
 
