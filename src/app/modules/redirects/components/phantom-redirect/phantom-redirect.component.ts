@@ -80,7 +80,7 @@ export class PhantomRedirectComponent implements OnInit {
     if (!phantomEncryptionPublicKey || !nonce || !data)
       throw new Error('Error: missing parameters in method onConnect');
 
-    this.phantomDeeplink.walletConnectCallback(
+    this.phantomDeeplink.walletConnectRedirect(
       phantomEncryptionPublicKey,
       nonce,
       data,

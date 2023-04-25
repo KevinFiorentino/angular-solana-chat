@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
 import { PhantomConnectService } from './phantom-connect.service';
+import { environment } from "@environments/environment";
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
 
@@ -50,9 +51,9 @@ export class PhantomDeeplinkService {
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const params = new URLSearchParams();
-    params.append('app_url', 'https://angular-solana-chat.vercel.app/');
+    params.append('app_url', environment.APP_URL);
     params.append('dapp_encryption_public_key', this.sessionKeypair.publicKey);
-    params.append('redirect_link', 'https://angular-solana-chat.vercel.app');
+    params.append('redirect_link', `${environment.APP_URL}/redirect/phantom/connect`);
     params.append('cluster', 'devnet');
 
     // Phantom will redirect us to another tab, so the app's state will be lost.
@@ -68,10 +69,10 @@ export class PhantomDeeplinkService {
 
 
   /* ******************************
-          CALLBACK METHODS
+          REDIRECT METHODS
   ****************************** */
 
-  walletConnectCallback(
+  walletConnectRedirect(
     phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
@@ -132,12 +133,12 @@ export class PhantomDeeplinkService {
 
   getAndSaveSessionKeypair() {
 
-    this.sessionKeypair = {
+    /* this.sessionKeypair = {
       publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
       secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
-    }
+    } */
 
-    /* const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
+    const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
     if (previousSessionData) {
       // Save previous keypair
       const data: PhantomSessionData = JSON.parse(previousSessionData)
@@ -153,7 +154,7 @@ export class PhantomDeeplinkService {
         secretKey: bs58.encode(sessionKeypair.secretKey),
       }
       this.sessionKeypair = keypairEncoded;
-    } */
+    }
   }
 
   setSessionKeypair() {
