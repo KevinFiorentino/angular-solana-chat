@@ -42,7 +42,7 @@ export class PhantomRedirectComponent implements OnInit {
       .subscribe((params: Params) => {
         setTimeout(() => {
           this.checkTypeRedirect(method, params);
-        }, 1000);
+        }, 5000);
       });
   }
 

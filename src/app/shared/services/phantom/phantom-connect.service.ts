@@ -43,9 +43,11 @@ export class PhantomConnectService {
   }
 
   walletConnetThroughDeeplink(publicKey: string) {
-    this.setAnchorProvider();
-    this.publicKey.next(new PublicKey(publicKey));
-    this.walletAddress = publicKey;
+    this.ngZone.run(() => {
+      this.setAnchorProvider();
+      this.publicKey.next(new PublicKey(publicKey));
+      this.walletAddress = publicKey;
+    });
   }
 
   async walletDisconnect() {
