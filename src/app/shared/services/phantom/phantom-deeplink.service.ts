@@ -132,12 +132,6 @@ export class PhantomDeeplinkService {
   ****************************** */
 
   getAndSaveSessionKeypair() {
-
-    /* this.sessionKeypair = {
-      publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
-      secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
-    } */
-
     const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
     if (previousSessionData) {
       // Save previous keypair
@@ -154,6 +148,11 @@ export class PhantomDeeplinkService {
         secretKey: bs58.encode(sessionKeypair.secretKey),
       }
       this.sessionKeypair = keypairEncoded;
+
+      /* this.sessionKeypair = {
+        publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
+        secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
+      } */
     }
   }
 

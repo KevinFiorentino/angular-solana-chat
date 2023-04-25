@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PhantomDeeplinkService } from '@shared/services/phantom/phantom-deeplink.service';
-import nacl from 'tweetnacl';
-import bs58 from 'bs58';
 
 @Component({
   selector: 'app-phantom-redirect',
@@ -42,7 +40,9 @@ export class PhantomRedirectComponent implements OnInit {
 
     this.route.queryParams
       .subscribe((params: Params) => {
-        this.checkTypeRedirect(method, params);
+        setTimeout(() => {
+          this.checkTypeRedirect(method, params);
+        }, 1000);
       });
   }
 
