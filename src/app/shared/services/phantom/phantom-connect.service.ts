@@ -54,6 +54,11 @@ export class PhantomConnectService {
     await this.phantom?.disconnect();
   }
 
+  walletDisconnetThroughDeeplink(publicKey: string) {
+    this.publicKey.next(null);
+    this.walletAddress = null;
+  }
+
 
   /* ********** NETWORK CONEXION ********** */
 

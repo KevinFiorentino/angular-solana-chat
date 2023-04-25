@@ -38,6 +38,13 @@ export class PhantomDeeplinkService {
     return this.isAndroid || this.isIphone ? true : false;
   }
 
+
+  /* ******************************
+       PHANTOM DEEPLINK METHODS
+  ****************************** */
+
+  // Documentation: https://docs.phantom.app/phantom-deeplinks/provider-methods
+
   walletConnect() {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
@@ -55,13 +62,20 @@ export class PhantomDeeplinkService {
     window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
   }
 
-  walletConnectRedirect(
+  walletDisconnect() {
+
+  }
+
+
+  /* ******************************
+          CALLBACK METHODS
+  ****************************** */
+
+  walletConnectCallback(
     phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
   ) {
-
-    console.log('this.sessionKeypair', this.sessionKeypair)
 
     const info = this.decryptDataFromPhantom(
       phantomEncryptionPublicKey,
@@ -69,17 +83,12 @@ export class PhantomDeeplinkService {
       data
     );
 
-
-
+    // Set data later connection
     this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
     this.nonce = nonce;
 
     this.phantomSession = info.session;
     this.phantom.walletConnetThroughDeeplink(info.public_key);
-  }
-
-  walletDisconnect() {
-
   }
 
 
@@ -123,12 +132,12 @@ export class PhantomDeeplinkService {
 
   getAndSaveSessionKeypair() {
 
-    /* this.sessionKeypair = {
+    this.sessionKeypair = {
       publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
       secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
-    } */
+    }
 
-    const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
+    /* const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
     if (previousSessionData) {
       // Save previous keypair
       const data: PhantomSessionData = JSON.parse(previousSessionData)
@@ -144,7 +153,7 @@ export class PhantomDeeplinkService {
         secretKey: bs58.encode(sessionKeypair.secretKey),
       }
       this.sessionKeypair = keypairEncoded;
-    }
+    } */
   }
 
   setSessionKeypair() {
