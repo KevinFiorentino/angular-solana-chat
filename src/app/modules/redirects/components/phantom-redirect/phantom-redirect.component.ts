@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { PhantomConnectService } from '@shared/services/phantom/phantom-connect.service';
 import { PhantomDeeplinkService } from '@shared/services/phantom/phantom-deeplink.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class PhantomRedirectComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private phantom: PhantomConnectService,
     private phantomDeeplink: PhantomDeeplinkService
   ) { }
 
@@ -111,12 +113,15 @@ export class PhantomRedirectComponent implements OnInit {
 
   previousSessionData?: string;
   data?: string;
+  wallet?: string | null;
 
   seeData() {
     const PHANTOM_SESSION_DATA = 'PHANTOM_SESSION_DATA';
     this.previousSessionData = JSON.stringify(localStorage.getItem(PHANTOM_SESSION_DATA));
 
     this.data = this.phantomDeeplink.getData();
+
+    this.wallet = this.phantom.getWallet();
   }
 
 }

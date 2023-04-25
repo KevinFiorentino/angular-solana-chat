@@ -26,6 +26,11 @@ export class PhantomConnectService {
   ) {}
 
 
+  getWallet() {
+    return this.walletAddress;
+  }
+
+
   /* ********** WALLET CONEXION ********** */
 
   async walletConnect() {
