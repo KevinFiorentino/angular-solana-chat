@@ -37,7 +37,7 @@ export class ChatProgramService {
     }]);
   }
 
-  async sendMessage(message: string): Promise<string> {     // Return Transaction ID
+  async sendMessage(message: string): Promise<string | undefined> {     // Return Transaction ID
     const { SystemProgram, Keypair } = web3;
 
     const provider = getProvider();
@@ -55,10 +55,12 @@ export class ChatProgramService {
       .transaction();
 
     const isMobile = this.phantomDeeplink.isMobileDevice()
-    if (isMobile)
+    if (isMobile) {
       this.phantomDeeplink.signAndSendTransaction(t, kp);
-
-    return this.phantom.signAndSendTransactionWeb(t, kp);
+      return
+    }
+    else
+      return this.phantom.signAndSendTransactionWeb(t, kp);
   }
 
   async updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
