@@ -154,10 +154,15 @@ export class PhantomDeeplinkService {
 
     const nonce = nacl.randomBytes(24);
 
+    const sharedSecretDapp = nacl.box.before(
+      bs58.decode(this.phantomEncryptionPublicKey!),
+      bs58.decode(this.sessionKeypair.secretKey),
+    );
+
     const encryptedPayload = nacl.box.after(
       Buffer.from(JSON.stringify(payload)),
       nonce,
-      bs58.decode(this.sessionKeypair.secretKey)
+      sharedSecretDapp
     );
 
     return [nonce, encryptedPayload];
