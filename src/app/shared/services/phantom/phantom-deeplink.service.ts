@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from '@solana/web3.js';
+import { Signer, Transaction } from '@solana/web3.js';
+import { getProvider } from '@project-serum/anchor';
 import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
 import { PhantomConnectService } from './phantom-connect.service';
 import { environment } from '@environments/environment';
@@ -85,11 +86,17 @@ export class PhantomDeeplinkService {
     window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);
   }
 
-  signAndSendTransaction(transaction: Transaction) {
+  async signAndSendTransaction(t: Transaction, signer?: Signer) {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
-    const serializedTransaction = bs58.encode(transaction.serialize({ requireAllSignatures: false }));
+    // Prepare transaction
+    const tPrepared = await this.phantom.prepareTransaction(t, signer);
+
+    // Prepare connection with Phantom
+    const serializedTransaction = bs58.encode(
+      tPrepared.serialize({ verifySignatures: false, requireAllSignatures: false })
+    );
 
     const payload = {
       transaction: serializedTransaction,
@@ -105,6 +112,7 @@ export class PhantomDeeplinkService {
       payload: bs58.encode(encryptedPayload),
     });
 
+    // Save Phantom deeplink session
     this.setSessionKeypair();
 
     window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);

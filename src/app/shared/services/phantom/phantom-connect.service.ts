@@ -79,7 +79,7 @@ export class PhantomConnectService {
 
     const opts: ConfirmOptions = { preflightCommitment: this.comm };
     const wallet = {
-      publicKey: new PublicKey(this.walletAddress),
+      publicKey: new PublicKey(this.walletAddress),   // Mock user wallet, this is important due to it will be the address signer
       signTransaction: () => Promise.reject(),
       signAllTransactions: () => Promise.reject(),
     };
@@ -100,9 +100,28 @@ export class PhantomConnectService {
   };
 
 
-  /* ********** TRANSACTION SIGN ********** */
+  /* ********** TRANSACTION SIGN & SEND ********** */
 
   async signAndSendTransactionWeb(t: Transaction, signer?: Signer): Promise<string> {
+
+    const tPrepared = await this.prepareTransaction(t, signer);
+
+    let tSigned: Transaction | undefined;
+
+    if (this.phantom)
+      tSigned = await this.phantom?.signTransaction(tPrepared);
+    else
+      throw new Error('Something was wrong with the user\'s wallet');
+
+    return this.connection.sendRawTransaction(
+      tSigned.serialize({ verifySignatures: false, requireAllSignatures: false })
+    );
+  }
+
+
+  /* ********** TRANSACTION PREPARATION ********** */
+
+  async prepareTransaction(t: Transaction, signer?: Signer): Promise<Transaction> {
     const provider = getProvider();
 
     t.feePayer = provider.publicKey;
@@ -114,12 +133,7 @@ export class PhantomConnectService {
     if (signer)
       t.sign(signer);
 
-    if (this.phantom)
-      t = await this.phantom?.signTransaction(t);
-
-    return this.connection.sendRawTransaction(
-      t.serialize({ verifySignatures: false, requireAllSignatures: false })
-    );
+    return t;
   }
 
 }

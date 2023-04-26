@@ -56,7 +56,7 @@ export class ChatProgramService {
 
     const isMobile = this.phantomDeeplink.isMobileDevice()
     if (isMobile)
-      this.phantomDeeplink.signAndSendTransaction(t);
+      this.phantomDeeplink.signAndSendTransaction(t, kp);
 
     return this.phantom.signAndSendTransactionWeb(t, kp);
   }
