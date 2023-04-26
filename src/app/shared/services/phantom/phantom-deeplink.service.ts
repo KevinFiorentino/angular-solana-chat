@@ -50,11 +50,12 @@ export class PhantomDeeplinkService {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
-    const params = new URLSearchParams();
-    params.append('app_url', environment.APP_URL);
-    params.append('dapp_encryption_public_key', this.sessionKeypair.publicKey);
-    params.append('redirect_link', `${environment.APP_URL}/redirect/phantom/connect`);
-    params.append('cluster', 'devnet');
+    const params = new URLSearchParams({
+      app_url: environment.APP_URL,
+      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      redirect_link: `${environment.APP_URL}/redirect/phantom/connect`,
+      cluster: 'devnet',
+    });
 
     // Phantom will redirect us to another tab, so the app's state will be lost.
     // We save the 'sessionKeypair' on localstorage to get it again later of the redirection.
@@ -64,7 +65,23 @@ export class PhantomDeeplinkService {
   }
 
   walletDisconnect() {
+    if (!this.sessionKeypair)
+      throw new Error('An error occurred with the connection between Phantom and this app.');
 
+    const payload = { session: this.phantomSession };
+
+    const [nonce, encryptedPayload] = this.encryptDataToPhantom(payload);
+
+    const params = new URLSearchParams({
+      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      nonce: bs58.encode(nonce),
+      redirect_link: `${environment.APP_URL}/redirect/phantom/disconnect`,
+      payload: bs58.encode(encryptedPayload),
+    });
+
+    this.deleteSessionKeypair();
+
+    window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);
   }
 
 
@@ -97,8 +114,19 @@ export class PhantomDeeplinkService {
         ENCRYPT DECRYPT DATA
   ****************************** */
 
-  encryptDataToPhantom() {
+  encryptDataToPhantom(payload: any) {
+    if (!this.sessionKeypair)
+      throw new Error('An error occurred with the connection between Phantom and this app.');
 
+    const nonce = nacl.randomBytes(24);
+
+    const encryptedPayload = nacl.box.after(
+      Buffer.from(JSON.stringify(payload)),
+      nonce,
+      bs58.decode(this.sessionKeypair.secretKey)
+    );
+
+    return [nonce, encryptedPayload];
   }
 
   decryptDataFromPhantom(
@@ -148,11 +176,6 @@ export class PhantomDeeplinkService {
         secretKey: bs58.encode(sessionKeypair.secretKey),
       }
       this.sessionKeypair = keypairEncoded;
-
-      /* this.sessionKeypair = {
-        publicKey: 'FHs4jGrYzBubjqZ2fHxH1wHNmY4v6r3oGbsskZEgiW35',
-        secretKey: '4JAWZUYwQJ8WhRe6PrnZmGT7cPPnKQ7Bk5qfyuHcuCPH',
-      } */
     }
   }
 
@@ -166,6 +189,10 @@ export class PhantomDeeplinkService {
       nonce: this.nonce || '',
     }
     localStorage.setItem(PHANTOM_SESSION_DATA, JSON.stringify(sessionData));
+  }
+
+  deleteSessionKeypair() {
+    localStorage.removeItem(PHANTOM_SESSION_DATA);
   }
 
 }

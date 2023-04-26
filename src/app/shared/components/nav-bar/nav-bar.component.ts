@@ -36,7 +36,11 @@ export class NavBarComponent implements OnInit {
   }
 
   walletDisconnect() {
-    this.phantom.walletDisconnect();
+    const isMobile = this.phantomDeeplink.isMobileDevice()
+    if (isMobile)
+      this.phantomDeeplink.walletDisconnect();
+    else
+      this.phantom.walletDisconnect();
   }
 
 }
