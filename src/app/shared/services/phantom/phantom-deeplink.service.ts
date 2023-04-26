@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Transaction } from '@solana/web3.js';
 import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
 import { PhantomConnectService } from './phantom-connect.service';
 import { environment } from '@environments/environment';
@@ -46,7 +47,7 @@ export class PhantomDeeplinkService {
 
   // Documentation: https://docs.phantom.app/phantom-deeplinks/provider-methods
 
-  walletConnect() {
+  walletConnect(): void {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
@@ -64,7 +65,7 @@ export class PhantomDeeplinkService {
     window.open(`https://phantom.app/ul/v1/connect?${params.toString()}`);
   }
 
-  walletDisconnect() {
+  walletDisconnect(): void {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
@@ -80,6 +81,31 @@ export class PhantomDeeplinkService {
     });
 
     this.deleteSessionKeypair();
+
+    window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);
+  }
+
+  signAndSendTransaction(transaction: Transaction) {
+    if (!this.sessionKeypair)
+      throw new Error('An error occurred with the connection between Phantom and this app.');
+
+    const serializedTransaction = bs58.encode(transaction.serialize({ requireAllSignatures: false }));
+
+    const payload = {
+      transaction: serializedTransaction,
+      session: this.phantomSession
+    };
+
+    const [nonce, encryptedPayload] = this.encryptDataToPhantom(payload);
+
+    const params = new URLSearchParams({
+      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      nonce: bs58.encode(nonce),
+      redirect_link: `${environment.APP_URL}/redirect/phantom/signAndSendTransaction`,
+      payload: bs58.encode(encryptedPayload),
+    });
+
+    this.setSessionKeypair();
 
     window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);
   }

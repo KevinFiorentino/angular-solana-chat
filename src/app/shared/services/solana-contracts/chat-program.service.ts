@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PublicKey } from '@solana/web3.js';
 import { PhantomConnectService } from '../phantom/phantom-connect.service';
+import { PhantomDeeplinkService } from '../phantom/phantom-deeplink.service';
 import { IDL, SolanaChat } from '@shared/idls/solana-chat.idl';
 import { web3, Program, ProgramAccount, getProvider, IdlTypes } from '@project-serum/anchor';
 
@@ -12,7 +13,8 @@ export class ChatProgramService {
   private programID = new PublicKey(IDL.metadata.address);
 
   constructor(
-    private phantom: PhantomConnectService
+    private phantom: PhantomConnectService,
+    private phantomDeeplink: PhantomDeeplinkService
   ) {}
 
 
@@ -51,6 +53,10 @@ export class ChatProgramService {
       })
       .signers([kp])
       .transaction();
+
+    const isMobile = this.phantomDeeplink.isMobileDevice()
+    if (isMobile)
+      this.phantomDeeplink.signAndSendTransaction(t);
 
     return this.phantom.signAndSendTransactionWeb(t, kp);
   }

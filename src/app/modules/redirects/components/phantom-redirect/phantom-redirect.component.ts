@@ -90,22 +90,19 @@ export class PhantomRedirectComponent implements OnInit {
 
   onDisconnect(params: Params) {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/disconnect
-    console.log('onDisconnect', params)
+    // It is necessary do nothing. Maybe redirect the user to another page.
   }
 
   onSignAndSendTransaction(params: Params) {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/signandsendtransaction
-    console.log('onSignAndSendTransaction', params)
   }
 
   onSignTransaction(params: Params) {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/signtransaction
-    console.log('onSignTransaction', params)
   }
 
   onSignMessage(params: Params) {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/signmessage
-    console.log('onSignMessage', params)
   }
 
 }
