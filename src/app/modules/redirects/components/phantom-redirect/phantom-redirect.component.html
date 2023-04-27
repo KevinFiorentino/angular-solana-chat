@@ -1,0 +1,10 @@
+<div *ngIf="txId">
+    <p><strong>Transaction ID:</strong> {{ txId }}</p>
+    <br><br>
+    <p>Here, the user should be redirected to the corresponding page based on the type of transaction.</p>
+</div>
+<div *ngIf="errorMessage">
+    <p><strong>Error code:</strong> {{ errorCode }}</p>
+    <br><br>
+    <p><strong>Error message:</strong> {{ errorMessage }}</p>
+</div>
