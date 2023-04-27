@@ -39,9 +39,6 @@ export class MyMessagesComponent implements OnInit {
         if (this.walletAddress) {
           this.messages = await this.chatProgram.getMessagesByWalletAddress(this.walletAddress);
           this.messages = this.utils.sortMessages(this.messages);
-
-          console.log('this.messages', this.messages)
-
           this.loading = false;
         }
       });
@@ -67,8 +64,8 @@ export class MyMessagesComponent implements OnInit {
   deleteMessage(msg: ProgramAccount<IdlTypes<SolanaChat>>): void {
     this.chatProgram.deleteMessage(msg.publicKey)
       .then(txId => {
-        console.log(`Transaction ID: ${txId}`);
-        this.callbackUpdMessages();
+        if (txId)
+          this.callbackUpdMessages();
       });
   }
 

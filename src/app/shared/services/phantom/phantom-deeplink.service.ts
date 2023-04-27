@@ -13,18 +13,16 @@ const PHANTOM_SESSION_DATA = 'PHANTOM_SESSION_DATA';
 })
 export class PhantomDeeplinkService {
 
-  // https://docs.phantom.app/phantom-deeplinks/provider-methods/connect
+  // Connection data
+  private dappEncryptionPublicKey?: KeypairEncoded;    // Temporary keypair to generate a secure connection between this app and Phantom
+  private phantomEncryptionPublicKey?: string;      // Public key used for Phantom for end-to-end encryption
+  private nonce?: string;                           // Nonce generated during the connection
+  private session?: string;                         // Session generated later the connection with Phantom, it is necessary to send & sign transactions
 
-  private sessionKeypair?: KeypairEncoded;      // Temporary keypair to generate a secure connection between this app and Phantom
+  private walletAddress?: string;                   // Public key of user wallet address
 
-  private phantomEncryptionPublicKey?: string;  // Public key used for Phantom for end-to-end encryption
-  private phantomSession?: string;              // Session generated later the connection with Phantom, it is necessary to send & sign transactions
-  private nonceSession?: string;                // Idem 'phantomSession'
-
-  private userPublicKey?: string;
-
-  public isAndroid = false;                     // Android Check
-  public isIphone = false;                      // IOS Check
+  public isAndroid = false;                         // Android Check
+  public isIphone = false;                          // IOS Check
 
   constructor(
     private phantom: PhantomConnectService,
@@ -50,12 +48,12 @@ export class PhantomDeeplinkService {
   // Documentation: https://docs.phantom.app/phantom-deeplinks/provider-methods
 
   walletConnect(): void {
-    if (!this.sessionKeypair)
+    if (!this.dappEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const params = new URLSearchParams({
       app_url: environment.APP_URL,
-      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      dapp_encryption_public_key: this.dappEncryptionPublicKey.publicKey,
       redirect_link: `${environment.APP_URL}/redirect/phantom/connect`,
       cluster: 'devnet',
     });
@@ -68,15 +66,15 @@ export class PhantomDeeplinkService {
   }
 
   walletDisconnect(): void {
-    if (!this.sessionKeypair)
+    if (!this.dappEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
-    const payload = { session: this.phantomSession };
+    const payload = { session: this.session };
 
     const [nonce, encryptedPayload] = this.encryptDataToPhantom(payload);
 
     const params = new URLSearchParams({
-      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      dapp_encryption_public_key: this.dappEncryptionPublicKey.publicKey,
       nonce: bs58.encode(nonce),
       redirect_link: `${environment.APP_URL}/redirect/phantom/disconnect`,
       payload: bs58.encode(encryptedPayload),
@@ -88,7 +86,7 @@ export class PhantomDeeplinkService {
   }
 
   async signAndSendTransaction(t: Transaction, signer?: Signer) {
-    if (!this.sessionKeypair)
+    if (!this.dappEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     // Prepare transaction
@@ -101,13 +99,13 @@ export class PhantomDeeplinkService {
 
     const payload = {
       transaction: serializedTransaction,
-      session: this.phantomSession
+      session: this.session
     };
 
     const [nonce, encryptedPayload] = this.encryptDataToPhantom(payload);
 
     const params = new URLSearchParams({
-      dapp_encryption_public_key: this.sessionKeypair.publicKey,
+      dapp_encryption_public_key: this.dappEncryptionPublicKey.publicKey,
       nonce: bs58.encode(nonce),
       redirect_link: `${environment.APP_URL}/redirect/phantom/signAndSendTransaction`,
       payload: bs58.encode(encryptedPayload),
@@ -124,6 +122,7 @@ export class PhantomDeeplinkService {
           REDIRECT METHODS
   ****************************** */
 
+  // https://docs.phantom.app/phantom-deeplinks/provider-methods/connect
   walletConnectRedirect(
     phantomEncryptionPublicKey: string,
     nonce: string,
@@ -132,19 +131,20 @@ export class PhantomDeeplinkService {
 
     // Set connection data
     this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
-    this.nonceSession = nonce;
+    this.nonce = nonce;
 
     const info: PhantomDeeplinkConnection = this.decryptDataFromPhantom(
       nonce,
       data,
     );
 
-    this.phantomSession = info.session;
-    this.userPublicKey = info.public_key;
+    this.session = info.session;
+    this.walletAddress = info.public_key;
 
-    this.phantom.walletConnetThroughDeeplink(this.userPublicKey);
+    this.phantom.walletConnetThroughDeeplink(this.walletAddress);
   }
 
+  // https://docs.phantom.app/phantom-deeplinks/provider-methods/signandsendtransaction
   signAndSendTransactionRedirect(
     nonce: string,
     data: string,
@@ -153,8 +153,8 @@ export class PhantomDeeplinkService {
     // Restore session
     this.getAndSaveSessionKeypair();
 
-    if (this.userPublicKey)
-      this.phantom.walletConnetThroughDeeplink(this.userPublicKey);
+    if (this.walletAddress)
+      this.phantom.walletConnetThroughDeeplink(this.walletAddress);
 
     // Decrypt data
     const info: PhantomDeeplinkSignAndSend = this.decryptDataFromPhantom(
@@ -171,14 +171,14 @@ export class PhantomDeeplinkService {
   ****************************** */
 
   encryptDataToPhantom(payload: any) {
-    if (!this.sessionKeypair)
+    if (!this.dappEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const nonce = nacl.randomBytes(24);
 
     const sharedSecretDapp = nacl.box.before(
       bs58.decode(this.phantomEncryptionPublicKey!),
-      bs58.decode(this.sessionKeypair.secretKey),
+      bs58.decode(this.dappEncryptionPublicKey.secretKey),
     );
 
     const encryptedPayload = nacl.box.after(
@@ -194,12 +194,12 @@ export class PhantomDeeplinkService {
     nonce: string,
     data: string,
   ): any {
-    if (!this.sessionKeypair || !this.phantomEncryptionPublicKey)
+    if (!this.dappEncryptionPublicKey || !this.phantomEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const sharedSecretDapp = nacl.box.before(
       bs58.decode(this.phantomEncryptionPublicKey),
-      bs58.decode(this.sessionKeypair.secretKey),
+      bs58.decode(this.dappEncryptionPublicKey.secretKey),
     );
 
     const decryptedData = nacl.box.open.after(
@@ -224,33 +224,33 @@ export class PhantomDeeplinkService {
     if (previousSessionData) {
       // Save previous session data
       const data: PhantomSessionData = JSON.parse(previousSessionData)
-      this.sessionKeypair = data.keypair;
-      this.userPublicKey = data.userPublicKey || '';
+      this.dappEncryptionPublicKey = data.keypair;
+      this.walletAddress = data.walletAddress || '';
       this.phantomEncryptionPublicKey = data.phantomEncryptionPublicKey || '';
-      this.phantomSession = data.session || '';
-      this.nonceSession = data.nonce || '';
+      this.session = data.session || '';
+      this.nonce = data.nonce || '';
     }
     else {
       // New keypair
-      const sessionKeypair = nacl.box.keyPair();
+      const kp = nacl.box.keyPair();
       const keypairEncoded: KeypairEncoded = {
-        publicKey: bs58.encode(sessionKeypair.publicKey),
-        secretKey: bs58.encode(sessionKeypair.secretKey),
+        publicKey: bs58.encode(kp.publicKey),
+        secretKey: bs58.encode(kp.secretKey),
       }
-      this.sessionKeypair = keypairEncoded;
+      this.dappEncryptionPublicKey = keypairEncoded;
     }
   }
 
   setSessionKeypair() {
-    if (!this.sessionKeypair)
+    if (!this.dappEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const sessionData: PhantomSessionData = {
-      keypair: this.sessionKeypair,
-      userPublicKey: this.userPublicKey || '',
+      keypair: this.dappEncryptionPublicKey,
+      walletAddress: this.walletAddress || '',
       phantomEncryptionPublicKey: this.phantomEncryptionPublicKey || '',
-      session: this.phantomSession || '',
-      nonce: this.nonceSession || '',
+      session: this.session || '',
+      nonce: this.nonce || '',
     }
     localStorage.setItem(PHANTOM_SESSION_DATA, JSON.stringify(sessionData));
   }

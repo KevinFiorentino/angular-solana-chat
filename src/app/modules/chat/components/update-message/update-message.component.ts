@@ -43,11 +43,12 @@ export class UpdateMessageComponent implements OnInit {
       const text = this.formMessage.get('text')!.value;
       this.chatProgram.updateMessage(text, this.data.msg.publicKey)
         .then(txId => {
-          console.log(`Transaction ID: ${txId}`);
-          this.alertTxOK(`Transaction ID: ${txId}`);
-          this.data.callback();
-          this.closeModal();
+          if (txId) {
+            this.alertTxOK(`Transaction ID: ${txId}`);
+            this.data.callback();
+          }
           this.loading = false;
+          this.closeModal();
         })
         .catch(err => {
           this.alertTxErr(err.message);

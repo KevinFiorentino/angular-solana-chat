@@ -37,7 +37,7 @@ export class ChatProgramService {
     }]);
   }
 
-  async sendMessage(message: string): Promise<string | undefined> {     // Return Transaction ID
+  async sendMessage(message: string): Promise<string | undefined> {     // Return Transaction ID or undefined if it is mobile
     const { SystemProgram, Keypair } = web3;
 
     const provider = getProvider();
@@ -54,7 +54,7 @@ export class ChatProgramService {
       .signers([kp])
       .transaction();
 
-    const isMobile = this.phantomDeeplink.isMobileDevice()
+    const isMobile = this.phantomDeeplink.isMobileDevice();
     if (isMobile) {
       this.phantomDeeplink.signAndSendTransaction(t, kp);
       return
@@ -63,11 +63,11 @@ export class ChatProgramService {
       return this.phantom.signAndSendTransactionWeb(t, kp);
   }
 
-  async updateMessage(message: string, accountPublicKey: PublicKey): Promise<string> {
+  async updateMessage(message: string, accountPublicKey: PublicKey): Promise<string | undefined> {
     const provider = getProvider();
     const program = new Program(IDL, this.programID, provider);
 
-    const i = await program.methods
+    const t = await program.methods
       .updateMessage(message)
       .accounts({
         message: accountPublicKey,
@@ -75,14 +75,20 @@ export class ChatProgramService {
       })
       .transaction();
 
-    return this.phantom.signAndSendTransactionWeb(i);
+    const isMobile = this.phantomDeeplink.isMobileDevice();
+    if (isMobile) {
+      this.phantomDeeplink.signAndSendTransaction(t);
+      return
+    }
+    else
+      return this.phantom.signAndSendTransactionWeb(t);
   }
 
-  async deleteMessage(accountPublicKey: PublicKey): Promise<string> {
+  async deleteMessage(accountPublicKey: PublicKey): Promise<string | undefined> {
     const provider = getProvider();
     const program = new Program(IDL, this.programID, provider);
 
-    const i = await program.methods
+    const t = await program.methods
       .deleteMessage()
       .accounts({
         message: accountPublicKey,
@@ -90,7 +96,13 @@ export class ChatProgramService {
       })
       .transaction();
 
-    return this.phantom.signAndSendTransactionWeb(i);
+    const isMobile = this.phantomDeeplink.isMobileDevice();
+    if (isMobile) {
+      this.phantomDeeplink.signAndSendTransaction(t);
+      return
+    }
+    else
+      return this.phantom.signAndSendTransactionWeb(t);
   }
 
 }

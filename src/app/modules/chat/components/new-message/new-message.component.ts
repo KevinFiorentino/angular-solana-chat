@@ -32,15 +32,17 @@ export class NewMessageComponent implements OnInit {
     });
   }
 
-  async sendMessage() {
+  sendMessage() {
     if (this.formMessage.valid) {
       this.loading = true;
       const text = this.formMessage.get('text')!.value;
       this.chatProgram.sendMessage(text)
         .then(txId => {
+          if (txId) {
+            this.alertTxOK(`Transaction ID: ${txId}`);
+            this.data.callback();
+          }
           this.loading = false;
-          this.alertTxOK(`Transaction ID: ${txId}`);
-          this.data.callback();
           this.closeModal();
         })
         .catch(err => {

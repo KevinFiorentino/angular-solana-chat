@@ -5,7 +5,7 @@ export interface KeypairEncoded {
 
 export interface PhantomSessionData {
   keypair: KeypairEncoded;
-  userPublicKey: string;
+  walletAddress: string;
   phantomEncryptionPublicKey: string | undefined;
   session: string | undefined;
   nonce: string | undefined;      // Each interaction with Phantom generate a new nonce. This is the connection's nonce.
