@@ -19,7 +19,7 @@ export class PhantomDeeplinkService {
 
   private phantomEncryptionPublicKey?: string;  // Public key used for Phantom for end-to-end encryption
   private phantomSession?: string;              // Session generated later the connection with Phantom, it is necessary to send & sign transactions
-  private nonce?: string;                       // Idem 'phantomSession'
+  private nonceSession?: string;                // Idem 'phantomSession'
 
   private userPublicKey?: string;
 
@@ -130,17 +130,16 @@ export class PhantomDeeplinkService {
     data: string,
   ): void {
 
+    // Set connection data
+    this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
+    this.nonceSession = nonce;
+
     const info: PhantomDeeplinkConnection = this.decryptDataFromPhantom(
       nonce,
       data,
     );
 
-    // Set connection data
-    this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
-    this.nonce = nonce;
     this.phantomSession = info.session;
-
-    // Save wallet public key
     this.userPublicKey = info.public_key;
 
     this.phantom.walletConnetThroughDeeplink(this.userPublicKey);
@@ -195,11 +194,11 @@ export class PhantomDeeplinkService {
     nonce: string,
     data: string,
   ): any {
-    if (!this.sessionKeypair)
+    if (!this.sessionKeypair || !this.phantomEncryptionPublicKey)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const sharedSecretDapp = nacl.box.before(
-      bs58.decode(this.phantomEncryptionPublicKey!),
+      bs58.decode(this.phantomEncryptionPublicKey),
       bs58.decode(this.sessionKeypair.secretKey),
     );
 
@@ -227,8 +226,9 @@ export class PhantomDeeplinkService {
       const data: PhantomSessionData = JSON.parse(previousSessionData)
       this.sessionKeypair = data.keypair;
       this.userPublicKey = data.userPublicKey || '';
+      this.phantomEncryptionPublicKey = data.phantomEncryptionPublicKey || '';
       this.phantomSession = data.session || '';
-      this.nonce = data.nonce || '';
+      this.nonceSession = data.nonce || '';
     }
     else {
       // New keypair
@@ -248,8 +248,9 @@ export class PhantomDeeplinkService {
     const sessionData: PhantomSessionData = {
       keypair: this.sessionKeypair,
       userPublicKey: this.userPublicKey || '',
+      phantomEncryptionPublicKey: this.phantomEncryptionPublicKey || '',
       session: this.phantomSession || '',
-      nonce: this.nonce || '',
+      nonce: this.nonceSession || '',
     }
     localStorage.setItem(PHANTOM_SESSION_DATA, JSON.stringify(sessionData));
   }
