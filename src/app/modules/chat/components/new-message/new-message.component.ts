@@ -39,7 +39,6 @@ export class NewMessageComponent implements OnInit {
       this.chatProgram.sendMessage(text)
         .then(txId => {
           this.loading = false;
-          console.log(`Transaction ID: ${txId}`);
           this.alertTxOK(`Transaction ID: ${txId}`);
           this.data.callback();
           this.closeModal();

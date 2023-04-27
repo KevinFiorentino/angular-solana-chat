@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PhantomDeeplinkService } from '@shared/services/phantom/phantom-deeplink.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-phantom-redirect',
@@ -27,6 +28,7 @@ export class PhantomRedirectComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
     private phantomDeeplink: PhantomDeeplinkService
   ) { }
 
@@ -57,9 +59,6 @@ export class PhantomRedirectComponent implements OnInit {
       case 'signAndSendTransaction' : {
         this.onSignAndSendTransaction(params);
       };break;
-      case 'signTransaction' : {
-        this.onSignTransaction(params);
-      };break;
       case 'signMessage' : {
         this.onSignMessage(params);
       };break;
@@ -70,7 +69,7 @@ export class PhantomRedirectComponent implements OnInit {
   }
 
 
-  onConnect(params: Params) {
+  onConnect(params: Params): void {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/connect
 
     const phantomEncryptionPublicKey = params.phantom_encryption_public_key;
@@ -85,24 +84,41 @@ export class PhantomRedirectComponent implements OnInit {
       nonce,
       data,
     );
-
   }
 
-  onDisconnect(params: Params) {
+  onDisconnect(params: Params): void {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/disconnect
     // It is necessary do nothing. Maybe redirect the user to another page.
   }
 
-  onSignAndSendTransaction(params: Params) {
+  onSignAndSendTransaction(params: Params): void {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/signandsendtransaction
+
+    const nonce = params.nonce;
+    const data = params.data;
+
+    if (!nonce || !data)
+      throw new Error('Error: missing parameters in method onSignAndSendTransaction');
+
+    const txId = this.phantomDeeplink.signAndSendTransactionRedirect(
+      nonce,
+      data,
+    );
+
+    this.snackBar.open(`Transaction ID: ${txId}`, 'Close', {
+      duration: 7000,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+      panelClass: ['app-alert-success']
+    });
   }
 
-  onSignTransaction(params: Params) {
-    // https://docs.phantom.app/phantom-deeplinks/provider-methods/signtransaction
-  }
-
-  onSignMessage(params: Params) {
+  onSignMessage(params: Params): void {
     // https://docs.phantom.app/phantom-deeplinks/provider-methods/signmessage
+  }
+
+  onError(): void {
+
   }
 
 }

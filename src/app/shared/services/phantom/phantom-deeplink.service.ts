@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Signer, Transaction } from '@solana/web3.js';
-import { getProvider } from '@project-serum/anchor';
-import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection } from '@shared/models/phantom-deeplink-interfaces';
+import { KeypairEncoded, PhantomSessionData, PhantomDeeplinkConnection, PhantomDeeplinkSignAndSend } from '@shared/models/phantom-deeplink-interfaces';
 import { PhantomConnectService } from './phantom-connect.service';
 import { environment } from '@environments/environment';
 import nacl from 'tweetnacl';
@@ -21,6 +20,8 @@ export class PhantomDeeplinkService {
   private phantomEncryptionPublicKey?: string;  // Public key used for Phantom for end-to-end encryption
   private phantomSession?: string;              // Session generated later the connection with Phantom, it is necessary to send & sign transactions
   private nonce?: string;                       // Idem 'phantomSession'
+
+  private userPublicKey?: string;
 
   public isAndroid = false;                     // Android Check
   public isIphone = false;                      // IOS Check
@@ -127,20 +128,42 @@ export class PhantomDeeplinkService {
     phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
-  ) {
+  ): void {
 
-    const info = this.decryptDataFromPhantom(
-      phantomEncryptionPublicKey,
+    const info: PhantomDeeplinkConnection = this.decryptDataFromPhantom(
       nonce,
-      data
+      data,
     );
 
-    // Set data later connection
+    // Set connection data
     this.phantomEncryptionPublicKey = phantomEncryptionPublicKey;
     this.nonce = nonce;
-
     this.phantomSession = info.session;
-    this.phantom.walletConnetThroughDeeplink(info.public_key);
+
+    // Save wallet public key
+    this.userPublicKey = info.public_key;
+
+    this.phantom.walletConnetThroughDeeplink(this.userPublicKey);
+  }
+
+  signAndSendTransactionRedirect(
+    nonce: string,
+    data: string,
+  ) {
+
+    // Restore session
+    this.getAndSaveSessionKeypair();
+
+    if (this.userPublicKey)
+      this.phantom.walletConnetThroughDeeplink(this.userPublicKey);
+
+    // Decrypt data
+    const info: PhantomDeeplinkSignAndSend = this.decryptDataFromPhantom(
+      nonce,
+      data,
+    );
+
+    return info.signature;
   }
 
 
@@ -169,15 +192,14 @@ export class PhantomDeeplinkService {
   }
 
   decryptDataFromPhantom(
-    phantomEncryptionPublicKey: string,
     nonce: string,
     data: string,
-  ): PhantomDeeplinkConnection {
+  ): any {
     if (!this.sessionKeypair)
       throw new Error('An error occurred with the connection between Phantom and this app.');
 
     const sharedSecretDapp = nacl.box.before(
-      bs58.decode(phantomEncryptionPublicKey!),
+      bs58.decode(this.phantomEncryptionPublicKey!),
       bs58.decode(this.sessionKeypair.secretKey),
     );
 
@@ -201,9 +223,10 @@ export class PhantomDeeplinkService {
   getAndSaveSessionKeypair() {
     const previousSessionData = localStorage.getItem(PHANTOM_SESSION_DATA);
     if (previousSessionData) {
-      // Save previous keypair
+      // Save previous session data
       const data: PhantomSessionData = JSON.parse(previousSessionData)
       this.sessionKeypair = data.keypair;
+      this.userPublicKey = data.userPublicKey || '';
       this.phantomSession = data.session || '';
       this.nonce = data.nonce || '';
     }
@@ -224,6 +247,7 @@ export class PhantomDeeplinkService {
 
     const sessionData: PhantomSessionData = {
       keypair: this.sessionKeypair,
+      userPublicKey: this.userPublicKey || '',
       session: this.phantomSession || '',
       nonce: this.nonce || '',
     }
