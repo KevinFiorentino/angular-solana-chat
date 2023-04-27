@@ -115,7 +115,7 @@ export class PhantomDeeplinkService {
     // Save Phantom deeplink session
     this.setSessionKeypair();
 
-    window.open(`https://phantom.app/ul/v1/disconnect?${params.toString()}`);
+    window.open(`https://phantom.app/ul/v1/signAndSendTransaction?${params.toString()}`);
   }
 
 
