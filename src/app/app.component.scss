@@ -7,6 +7,11 @@
         width: 70%;
         margin-top: 15px;
     }
+    @media (max-width: 768px) {
+        h1 {
+            width: 90%;
+        }
+    }
 }
 
 // Alerts

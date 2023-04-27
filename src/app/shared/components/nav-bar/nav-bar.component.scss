@@ -38,4 +38,15 @@
     .active {
         text-decoration: underline !important;
     }
+    .logo-mobile {
+        display: none;
+    }
+    @media (max-width: 512px) {
+        .logo-desktop {
+            display: none;
+        }
+        .logo-mobile {
+            display: block;
+        }
+    }
 }
