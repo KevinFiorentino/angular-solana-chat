@@ -1,6 +1,7 @@
 # Angular/Solana dapp
 
-- https://angular-solana-chat.vercel.app/
+- [See on Vercel](https://angular-solana-chat.vercel.app/)
+- [See contract](https://github.com/KevinFiorentino/solana-chat)
 
 ## Config environment
 
