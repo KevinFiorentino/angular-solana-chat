@@ -30,10 +30,16 @@
               "@project-serum/borsh",
               "@solana/buffer-layout",
               "assert",
-              "borsh",
+              "bigint-buffer",
+              "bn.js",
               "bs58",
+              "borsh",
               "buffer",
+              "camelcase",
+              "eventemitter3",
               "jayson/lib/client/browser",
+              "js-sha256",
+              "tweetnacl",
               "rpc-websockets"
             ],
             "assets": [
